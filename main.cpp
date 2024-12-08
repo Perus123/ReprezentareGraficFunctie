@@ -1,8 +1,9 @@
-#include "HEADER.hpp"
+#include "header.hpp"
 
 
 int main() {
+    
+    
    
-    scrieunu();
     return 0;
 }
