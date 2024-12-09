@@ -49,9 +49,19 @@ public:
    functie()
    {
       input = "";
-      delta = 0.001;
+      delta = 0.01;
    }
-   void calcularePuncte(float start, float end);
+   friend float executareFunctie(float valoare, const functie& a);
+   void calcularePuncte(float start, float end){
+      float  valoare=start;
+      while(valoare<=end)
+      {  
+         float res=executareFunctie(valoare, *this);
+         valori.emplace_back(res);
+         valoare+=delta;
+      }
+   }
+
    void calculareOrdinePostfix()
    {
       int i = 0, lungime = input.size();
@@ -130,7 +140,7 @@ public:
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
-void executareFunctie(float variabila, const functie &a)
+float executareFunctie(float variabila, const functie &a)
 {
    stack<float> stiva;
    int i = 0;
@@ -185,7 +195,7 @@ void executareFunctie(float variabila, const functie &a)
 
       }
    }
-   cout<<"\n Rezultat: " <<stiva.top();
+   return stiva.top();
 }
 
 

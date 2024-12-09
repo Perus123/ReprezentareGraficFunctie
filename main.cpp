@@ -5,9 +5,12 @@ int main() {
     
     
     functie a;
-    a.input="cos(x)+3*x";
+    a.input="cos(x)";
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
-    executareFunctie(1, a);
+    a.calcularePuncte(0,5);
+    for(int i=0;i<100;i++)
+        cout<<a.valori[i]<<" ";
+
     return 0;
 }
