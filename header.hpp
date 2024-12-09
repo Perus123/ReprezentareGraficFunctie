@@ -61,7 +61,7 @@ public:
       while(valoare<=end)
       {  
          float res=executareFunctie(valoare, *this);
-         valori.emplace_back(res);
+         valori.emplace_back(punct({valoare, res}));
          valoare+=delta;
       }
    }
