@@ -5,7 +5,7 @@ int main() {
     
     
     functie a;
-    a.input="2*3+(8-3)/2";
+    a.input="cos(x)^2+sin(x^3/4*5)*ln(e^x)";
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
     return 0;
