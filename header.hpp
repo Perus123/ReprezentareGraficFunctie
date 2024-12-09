@@ -38,6 +38,10 @@ void stackdump(vector<string> st)
    for (int i = 0; i < st.size(); i++)
       cout << st[i] << " ";
 }
+struct punct
+{
+   float x=0,y=0;
+};
 class functie
 {
 public:
@@ -45,7 +49,7 @@ public:
    vector<string> sirPostfix;
    /// inputul trebuie prelucrat in REVERSE POLISH
    float delta;
-   vector<float> valori;
+   vector<punct> valori;
    functie()
    {
       input = "";
@@ -57,7 +61,7 @@ public:
       while(valoare<=end)
       {  
          float res=executareFunctie(valoare, *this);
-         valori.emplace_back(res);
+         valori.emplace_back(punct{valoare, res});
          valoare+=delta;
       }
    }
@@ -157,7 +161,9 @@ float executareFunctie(float variabila, const functie &a)
          float var = stiva.top();
          stiva.pop();
          if (element == "ln")
-         {
+         {  
+            if(var<=0)
+               throw invalid_argument("Se calculeaza ln dintr-un numar negativ");
             var = log(var);
             stiva.push(var);
          }
