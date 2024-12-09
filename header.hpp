@@ -62,7 +62,7 @@ public:
       {
          char c = input[i]; /// patru cazuri 1. Functii sin, cos, ln, tan / 2. numere sau variabila x, 3. operatori / 4. paranteze
                             /// functia de prelucrare input se asigura ca nu vor exista probleme
-         if (c >= 'a' && c <= 'z' && c != 'x')
+         if (c >= 'a' && c <= 'z' && c != 'x')// cazul 1, sin, cos , ln, tan, verificam daca este un cuvant care descrie o functie
          {
             while (c >= 'a' && c <= 'z')
             {
@@ -71,10 +71,10 @@ public:
                c = input[i];
             }
             i--;
-            operatori.push(numar);
+            operatori.push(numar);// adaugam la final "numele" functiei in stiva de operatori
             numar = ""; /// creeaza functie si o pune in stack
          }
-         else if (isdigit(c) || c == 'x')
+         else if (isdigit(c) || c == 'x')// daca avem x sau un numar 
          {
             while (isdigit(c) || c == 'x')
             {
@@ -83,7 +83,7 @@ public:
                c = input[i];
             }
             i--;
-            sirPostfix.emplace_back(numar);
+            sirPostfix.emplace_back(numar);// folosita pentru ca este mai rapida decat push_back
             numar = ""; /// creeaza numar si il pune in sir
          }
          else if (isoperator(c))
@@ -91,7 +91,7 @@ public:
 
             while (operatori.empty() == 0 &&
                    (prioritateOperator(operatori.top()) > prioritateOperator(c) ||
-                    (prioritateOperator(operatori.top()) == prioritateOperator(c) && c != '^')))
+                    (prioritateOperator(operatori.top()) == prioritateOperator(c) && c != '^')))// verificam prioritatea operatorilor
             {
                sirPostfix.emplace_back(operatori.top());
                operatori.pop();
@@ -102,7 +102,7 @@ public:
          }
          else if (c == '(')
             operatori.push("(");
-         else if (c == ')')
+         else if (c == ')')// daca avem paranteza inchisa, dam pop la toti operatorii intalniti pana la '('
          {
             while (operatori.empty() == 0 && operatori.top() != "(")
             {
@@ -110,9 +110,9 @@ public:
                sirPostfix.emplace_back(operatori.top());
                operatori.pop();
             }
-            if (operatori.empty() == 0)
+            if (operatori.empty() == 0)// elimina si paranteza '('
                operatori.pop();
-            if (operatori.empty() == 0 && operatori.top()[0] >= 'a' && operatori.top()[0] <= 'z')
+            if (operatori.empty() == 0 && operatori.top()[0] >= 'a' && operatori.top()[0] <= 'z')// daca aveai in fata o functie de tipul cos, ln etc.
             {
                sirPostfix.emplace_back(operatori.top());
                operatori.pop();
@@ -130,18 +130,19 @@ public:
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
-void executareFunctie(float variabila, const functie &a)
+void executareFunctie(float variabila, const functie &a)// returneaza valoarea functiei pentru o variabila data
 {
    stack<float> stiva;
    int i = 0;
    for (int i = 0; i < a.sirPostfix.size(); i++)
    {
+      // incepem prin a separa variabilele si le punem pe stiva
       string element = a.sirPostfix[i];
       if (element == "x")
          stiva.push(variabila);
       else if (isdigit(element[0]))
          stiva.push(stof(element));
-      else if (element.size() >= 2)
+      else if (element.size() >= 2)// daca avem o functie, o inlocuim cu valoarea ei
       {
          float var = stiva.top();
          stiva.pop();
@@ -166,7 +167,7 @@ void executareFunctie(float variabila, const functie &a)
             stiva.push(var);
          }
       }
-      else
+      else// avem 2 variabile despartite printr-un operator
       {
          float var1=stiva.top();
          stiva.pop();
