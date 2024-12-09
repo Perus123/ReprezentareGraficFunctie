@@ -199,5 +199,11 @@ void executareFunctie(float variabila, const functie &a)
    return stiva.top();
 }
 
+string curatareInput (string s)
+{
+   stack<string> operanzi;
+   
+}
+
 
 #endif
