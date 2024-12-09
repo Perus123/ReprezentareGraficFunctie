@@ -140,7 +140,7 @@ public:
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
-void executareFunctie(float variabila, const functie &a)
+float executareFunctie(float variabila, const functie &a)
 {
    stack<float> stiva;
    int i = 0;
