@@ -5,13 +5,13 @@ int main() {
     
     
     functie a;
-    a.input="cos(x)";
+    a.input="";
     cout<< curatareInput(a.input);
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
     a.calcularePuncte(-2,5);
     for(int i=0;i<100;i++)
-        cout<<a.valori[i].x<<" ";
+        cout<<a.valori[i].y<<" ";
 
     return 0;
 }

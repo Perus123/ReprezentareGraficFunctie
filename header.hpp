@@ -187,8 +187,13 @@ float executareFunctie(float variabila, const functie &a)
       {
          float var1 = stiva.top();
          stiva.pop();
-         float var2 = stiva.top();
-         stiva.pop();
+         
+         float var2 =0;
+         if(stiva.empty()==0){
+            var2=stiva.top();
+            stiva.pop();
+         }
+             
          if (element == "+")
             stiva.push(var2 + var1);
          else if (element == "-")
@@ -217,7 +222,11 @@ string curatareInput(string s)
    string cuvant;
    string expresie;
    int inparanteza = 0;
-   s.erase(remove(s.begin(), s.end(), ' '), s.end());
+   string auxFaraSpatii="";
+   for(int i=0;i<s.size();i++)
+      if(s[i]!=' ')
+         auxFaraSpatii+=s[i];
+   s=auxFaraSpatii;
    for (int i = 0; i < s.size(); i++)
    {
       char c = s[i];
@@ -295,5 +304,4 @@ string curatareInput(string s)
 
    return expresie;
 }
-
 #endif
