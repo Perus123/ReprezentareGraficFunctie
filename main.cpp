@@ -5,13 +5,12 @@ int main() {
     
     
     functie a;
-    a.input="";
-    cout<< curatareInput(a.input);
+    a.input="x^2";
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
-    a.calcularePuncte(-2,5);
-    for(int i=0;i<100;i++)
-        cout<<a.valori[i].y<<" ";
-
+    a.calcularePuncte(2,3);
+    for(int i=0;i<=100;i++)
+        cout<<a.valori[i].x<<" "<<a.valori[i].y<<"\n";
+    cout<< pow(3.0,2.0);
     return 0;
 }
