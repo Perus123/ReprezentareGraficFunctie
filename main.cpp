@@ -1,16 +1,30 @@
-#include "header.hpp"
+#include <SFML/Graphics.hpp>
+#include <iostream>
 
 using namespace std;
-int main() {
-    
-    
-    functie a;
-    a.input="x^2";
-    a.calculareOrdinePostfix();
-    stackdump(a.sirPostfix);
-    a.calcularePuncte(2,3);
-    for(int i=0;i<=100;i++)
-        cout<<a.valori[i].x<<" "<<a.valori[i].y<<"\n";
-    cout<< pow(3.0,2.0);
+
+int main()
+{    
+    std::cout<<"DA";
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
+
     return 0;
 }

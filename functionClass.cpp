@@ -5,8 +5,8 @@
         delta = 0.01;
     }
 
-   float executareFunctie(float variabila, const functie &a){
-   stack<float> stiva;
+   double executareFunctie(double variabila, const functie &a){
+   stack<double> stiva;
    int i = 0;
    for (int i = 0; i < a.sirPostfix.size(); i++)
    {
@@ -18,7 +18,7 @@
          stiva.push(stof(element));
       else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
       {
-         float var = stiva.top();
+         double var = stiva.top();
          stiva.pop();
          if (element == "ln")
          {  
@@ -45,10 +45,10 @@
       }
       else // avem 2 variabile despartite printr-un operator
       {
-         float var1 = stiva.top();
+         double var1 = stiva.top();
          stiva.pop();
          
-         float var2 =0;
+         double var2 =0;
          if(stiva.empty()==0){
             var2=stiva.top();
             stiva.pop();
@@ -69,10 +69,10 @@
    return stiva.top();
 }
 
-    void functie::calcularePuncte(float start, float end) {
-        float valoare = start;
+    void functie::calcularePuncte(double start, double end) {
+        double valoare = start;
         while (valoare <= end) {
-            float res = executareFunctie(valoare, *this);
+            double res = executareFunctie(valoare, *this);
             valori.emplace_back(punct({valoare, res}));
             valoare += delta;
         }

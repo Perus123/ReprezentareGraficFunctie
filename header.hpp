@@ -14,7 +14,7 @@ int prioritateOperator(const string &c);
 void stackdump(vector<string> st);
 struct punct
 {
-   float x=0,y=0;
+   double x=0,y=0;
 };
 class functie
 {
@@ -22,17 +22,29 @@ public:
    string input;
    vector<string> sirPostfix;
    /// inputul trebuie prelucrat in REVERSE POLISH
-   float delta;
+   double delta;
    vector<punct> valori;
    functie();
-   friend float executareFunctie(float valoare, const functie& a);
-   void calcularePuncte(float start, float end);
+   friend double executareFunctie(double valoare, const functie& a);
+   void calcularePuncte(double start, double end);
    void calculareOrdinePostfix();
    void prelucrareInput();
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
+class grafic
+{
+   public:
+   punct centru;
+   double capatStanga, capatDreapta;
+   const int numarPuncte=2000;
+   double delta;
 
+   
+   grafic(float screenWidth, float screenHeight);
+   void calculareDelta();
+
+};
 
 bool estefunctie(const string& s);
 bool isoperand(char c);
