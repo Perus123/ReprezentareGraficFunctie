@@ -38,11 +38,12 @@ class grafic
    punct centru;
    double capatStanga, capatDreapta;
    const int numarPuncte=2000;
-   double delta;
-
-   
-   grafic(float screenWidth, float screenHeight);
-   void calculareDelta();
+   double delta,diviziune;
+   double latimeEcran, inaltimeEcran;
+   double capatSus, capatJos;
+   grafic(double screenWidth, double screenHeight);
+   void calculareDeltasiDivizune();
+   void initializareGrafic();
 
 };
 

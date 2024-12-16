@@ -11,6 +11,8 @@ int main() {
     a.calcularePuncte(2,3);
     for(int i=0;i<=100;i++)
         cout<<a.valori[i].x<<" "<<a.valori[i].y<<"\n";
-    cout<< pow(3.0,2.0);
+    grafic principal(800, 600);
+    principal.initializareGrafic();
+
     return 0;
 }
