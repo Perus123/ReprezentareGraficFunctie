@@ -5,6 +5,7 @@ int main() {
     
     
     functie a;
+    vector<functie>f;
     a.input="x^2";
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
@@ -12,7 +13,9 @@ int main() {
     for(int i=0;i<=100;i++)
         cout<<a.valori[i].x<<" "<<a.valori[i].y<<"\n";
     grafic principal(800, 600);
-    principal.initializareGrafic();
+    cout<<principal.inaltimeEcran<<" "<<principal.latimeEcran;
+    f.push_back(a);
+    principal.initializareGrafic(f);
 
     return 0;
 }

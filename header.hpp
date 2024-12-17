@@ -43,7 +43,7 @@ class grafic
    double capatSus, capatJos;
    grafic(double screenWidth, double screenHeight);
    void calculareDeltasiDivizune();
-   void initializareGrafic();
+   void initializareGrafic(const vector<functie>& functii);
 
 };
 
