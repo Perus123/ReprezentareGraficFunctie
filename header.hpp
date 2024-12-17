@@ -29,6 +29,7 @@ public:
    void calcularePuncte(double start, double end);
    void calculareOrdinePostfix();
    void prelucrareInput();
+   
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
@@ -44,6 +45,8 @@ class grafic
    grafic(double screenWidth, double screenHeight);
    void calculareDeltasiDivizune();
    void initializareGrafic(const vector<functie>& functii);
+   void deseneazaNumere(sf::RenderWindow& window);
+   void deseneazaLiniaFunctiei(sf::RenderWindow& window,const functie& functiaCurenta);
 
 };
 

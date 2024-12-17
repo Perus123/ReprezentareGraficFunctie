@@ -34,7 +34,7 @@
          }
          else if (element == "sin")
          {
-            var = tan(var);
+            var = sin(var);
             stiva.push(var);
          }
          else if (element == "tan")
