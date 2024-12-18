@@ -6,7 +6,7 @@ int main() {
     
     functie a;
     vector<functie>f;
-    a.input="sin(x)+3";
+    a.input="-4";
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
     a.calcularePuncte(-10,10);
