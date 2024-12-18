@@ -8,6 +8,8 @@
    double executareFunctie(double variabila, const functie &a){
    stack<double> stiva;
    int i = 0;
+   if(a.sirPostfix.size()==0)
+   return 0;
    for (int i = 0; i < a.sirPostfix.size(); i++)
    {
       // incepem prin a separa variabilele si le punem pe stiva
