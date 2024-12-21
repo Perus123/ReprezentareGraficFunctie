@@ -9,7 +9,7 @@
    stack<double> stiva;
    int i = 0;
    for (int i = 0; i < a.sirPostfix.size(); i++)
-   {
+   {  
       // incepem prin a separa variabilele si le punem pe stiva
       string element = a.sirPostfix[i];
       if (element == "x")
