@@ -6,10 +6,8 @@ int main()
 
     functie a;
     vector<functie> f;
-    a.input = "x*(x-2^2)";
+    a.input = "x*(sin(1/x))";
     a.calculareOrdinePostfix();
-    stackdump(a.sirPostfix);
-    a.calcularePuncte(-10, 10);
     grafic principal(1200, 800);
     cout << principal.inaltimeEcran << " " << principal.latimeEcran;
     f.push_back(a);

@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <unordered_map>
 using namespace std;
 bool isoperator(char c);
 int prioritateOperator(char c);
@@ -21,12 +22,11 @@ class functie
 public:
    string input;
    vector<string> sirPostfix;
-   /// inputul trebuie prelucrat in REVERSE POLISH
    double delta;
    vector<punct> valori;
    functie();
    friend double executareFunctie(double valoare, const functie &a);
-   void calcularePuncte(double start, double end);
+   void calcularePuncte(double start, double end, double delta);
    void calculareOrdinePostfix();
    void prelucrareInput();
 
@@ -44,9 +44,12 @@ public:
    double capatSus, capatJos;
    grafic(double screenWidth, double screenHeight);
    void calculareDeltasiDivizune();
-   void initializareGrafic(const vector<functie> &functii);
+   void initializareGrafic(vector<functie> &functii);
    void deseneazaNumere(sf::RenderWindow &window);
    void deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &functiaCurenta);
+   void miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates,bool& recalculPuncte);
+   void setareLinii(sf::VertexArray& lines);
+   void schimbareZoom(const double Constanta);
 };
 
 bool estefunctie(const string &s);

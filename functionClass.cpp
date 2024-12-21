@@ -3,7 +3,6 @@
 functie::functie()
 {
     input = "";
-    delta = 0.01;
 }
 
 double executareFunctie(double variabila, const functie &a)
@@ -75,8 +74,9 @@ double executareFunctie(double variabila, const functie &a)
     return stiva.top();
 }
 
-void functie::calcularePuncte(double start, double end)
-{
+void functie::calcularePuncte(double start, double end, double delta)
+{   
+    valori.clear();
     double valoare = start;
     while (valoare <= end)
     {
@@ -84,6 +84,8 @@ void functie::calcularePuncte(double start, double end)
         valori.emplace_back(punct({valoare, res}));
         valoare += delta;
     }
+    cout<<valori.size()<<'\n';
+    
 }
 
 void functie::calculareOrdinePostfix()
