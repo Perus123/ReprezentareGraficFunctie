@@ -24,20 +24,21 @@ grafic::grafic(double screenWidth, double screenHeight)
 }
 
 bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)
-    {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-        sf::Vector2f buttonPos = button.getPosition();
-        sf::Vector2f buttonSize = button.getSize();
-        return mousePos.x >= buttonPos.x && mousePos.x <= buttonPos.x + buttonSize.x &&
-               mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + buttonSize.y;
-    }
+{
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f buttonPos = button.getPosition();
+    sf::Vector2f buttonSize = button.getSize();
+    return mousePos.x >= buttonPos.x && mousePos.x <= buttonPos.x + buttonSize.x &&
+           mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + buttonSize.y;
+}
 
-
-void grafic::initializareGrafic(vector<functie>& functii) {
+void grafic::initializareGrafic(vector<functie> &functii)
+{
     sf::RenderWindow window(sf::VideoMode(latimeEcran, inaltimeEcran), "Function Plotter");
-    
+
     sf::Font font;
-    if (!font.loadFromFile("TIMES.TTF")) {
+    if (!font.loadFromFile("TIMES.TTF"))
+    {
         std::cerr << "Error loading font!" << std::endl;
         return;
     }
@@ -83,43 +84,49 @@ void grafic::initializareGrafic(vector<functie>& functii) {
     string currentInput;
     bool isInputActive = false;
     bool needsRecalculation = false;
-    bool hasFunction = false;  // New flag to track if we have a valid function to display
+    bool hasFunction = false; // New flag to track if we have a valid function to display
 
     // Clear any existing functions
     functii.clear();
 
     unordered_map<sf::Keyboard::Key, bool> keyStates = {
-        {sf::Keyboard::W, false}, {sf::Keyboard::A, false},
-        {sf::Keyboard::S, false}, {sf::Keyboard::D, false},
-        {sf::Keyboard::Left, false}, {sf::Keyboard::Right, false},
-        {sf::Keyboard::Up, false}, {sf::Keyboard::Down, false}
-    };
+        {sf::Keyboard::W, false}, {sf::Keyboard::A, false}, {sf::Keyboard::S, false}, {sf::Keyboard::D, false}, {sf::Keyboard::Left, false}, {sf::Keyboard::Right, false}, {sf::Keyboard::Up, false}, {sf::Keyboard::Down, false}};
 
     window.setFramerateLimit(60);
 
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
                 window.close();
             }
 
             // Handle mouse clicks
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
                     // Check if clicked on input box
-                    if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                    if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
                         isInputActive = true;
                         inputBox.setOutlineColor(sf::Color::Blue);
                     }
                     // Check if clicked on enter button
-                    else if (enterButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
-                        if (!currentInput.empty()) {
-                            try {
+                    else if (enterButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        if (!currentInput.empty())
+                        {
+                            try
+                            {
                                 functie newFunc;
                                 newFunc.input = currentInput;
                                 curatareInput(newFunc.input);
-                                if(newFunc.input.empty()) {
+                                if (newFunc.input.empty())
+                                {
                                     errorText.setString("Invalid function format!");
                                     hasFunction = false;
                                     continue;
@@ -131,12 +138,16 @@ void grafic::initializareGrafic(vector<functie>& functii) {
                                 hasFunction = true;
                                 needsRecalculation = false;
                                 errorText.setString("");
-                            } catch (const std::exception& e) {
+                            }
+                            catch (const std::exception &e)
+                            {
                                 errorText.setString(e.what());
                                 hasFunction = false;
                             }
                         }
-                    } else {
+                    }
+                    else
+                    {
                         isInputActive = false;
                         inputBox.setOutlineColor(sf::Color::Black);
                     }
@@ -144,19 +155,26 @@ void grafic::initializareGrafic(vector<functie>& functii) {
             }
 
             // Handle text input
-            if (isInputActive && event.type == sf::Event::TextEntered) {
-                if (event.text.unicode == '\b') {  // Backspace
-                    if (!currentInput.empty()) {
+            if (isInputActive && event.type == sf::Event::TextEntered)
+            {
+                if (event.text.unicode == '\b')
+                { // Backspace
+                    if (!currentInput.empty())
+                    {
                         currentInput.pop_back();
                     }
                 }
-                else if (event.text.unicode == 13) {  // Enter key
-                    if (!currentInput.empty()) {
-                        try {
+                else if (event.text.unicode == 13)
+                { // Enter key
+                    if (!currentInput.empty())
+                    {
+                        try
+                        {
                             functie newFunc;
                             newFunc.input = currentInput;
                             curatareInput(newFunc.input);
-                            if(newFunc.input.empty()) {
+                            if (newFunc.input.empty())
+                            {
                                 errorText.setString("Invalid function format!");
                                 hasFunction = false;
                                 continue;
@@ -170,77 +188,93 @@ void grafic::initializareGrafic(vector<functie>& functii) {
                             errorText.setString("");
                             isInputActive = false;
                             inputBox.setOutlineColor(sf::Color::Black);
-                        } catch (const std::exception& e) {
+                        }
+                        catch (const std::exception &e)
+                        {
                             errorText.setString(e.what());
                             hasFunction = false;
                         }
                     }
                 }
-                else if (event.text.unicode < 128) {  // Regular character
+                else if (event.text.unicode < 128)
+                { // Regular character
                     currentInput += static_cast<char>(event.text.unicode);
                 }
                 inputText.setString(currentInput);
             }
 
             // Handle keyboard movement
-            if (event.type == sf::Event::KeyPressed) {
-                if (keyStates.find(event.key.code) != keyStates.end()) {
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (keyStates.find(event.key.code) != keyStates.end())
+                {
                     keyStates[event.key.code] = true;
                 }
                 // Handle zoom
-                if (event.key.code == sf::Keyboard::Add) {
+                if (event.key.code == sf::Keyboard::Add)
+                {
                     schimbareZoom(0.5);
                     needsRecalculation = true;
                 }
-                if (event.key.code == sf::Keyboard::Subtract) {
+                if (event.key.code == sf::Keyboard::Subtract)
+                {
                     schimbareZoom(2.0);
                     needsRecalculation = true;
                 }
             }
-            if (event.type == sf::Event::KeyReleased) {
-                if (keyStates.find(event.key.code) != keyStates.end()) {
+            if (event.type == sf::Event::KeyReleased)
+            {
+                if (keyStates.find(event.key.code) != keyStates.end())
+                {
                     keyStates[event.key.code] = false;
                 }
             }
         }
 
         // Handle continuous movement
-        if (hasFunction) {  // Only allow movement if we have a function
+        if (hasFunction)
+        { // Only allow movement if we have a function
             miscareEcran(keyStates, needsRecalculation);
+            setareLinii(lines);
         }
-        
+
         // Recalculate points if needed
-        if (needsRecalculation && hasFunction && !functii.empty()) {
+        if (needsRecalculation && hasFunction && !functii.empty())
+        {
             functii[0].calcularePuncte(capatStanga, capatDreapta, delta);
             needsRecalculation = false;
         }
 
         // Update hover effects
-        if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)) {
-            enterButton.setFillColor(sf::Color(0, 180, 0));  // Lighter green on hover
-        } else {
+        if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
+        {
+            enterButton.setFillColor(sf::Color(0, 180, 0)); // Lighter green on hover
+        }
+        else
+        {
             enterButton.setFillColor(sf::Color::Green);
         }
 
         // Drawing
         window.clear(sf::Color::White);
-        
+
         // Draw coordinate system
         window.draw(lines);
         deseneazaNumere(window);
-        
+
         // Draw function only if we have a valid one
-        if (hasFunction && !functii.empty()) {
+        if (hasFunction && !functii.empty())
+        {
             deseneazaLiniaFunctiei(window, functii[0]);
         }
-        
+
         // Draw UI elements
         window.draw(inputBox);
         window.draw(inputText);
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        
+
         window.display();
     }
 }
