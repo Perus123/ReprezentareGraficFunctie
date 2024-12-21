@@ -1,17 +1,17 @@
 #include "header.hpp"
 
 using namespace std;
-int main() {
-    
-    
+int main()
+{
+
     functie a;
-    vector<functie>f;
-    a.input="-4";
+    vector<functie> f;
+    a.input = "x*(x-2^2)";
     a.calculareOrdinePostfix();
     stackdump(a.sirPostfix);
-    a.calcularePuncte(-10,10);
+    a.calcularePuncte(-10, 10);
     grafic principal(1200, 800);
-    cout<<principal.inaltimeEcran<<" "<<principal.latimeEcran;
+    cout << principal.inaltimeEcran << " " << principal.latimeEcran;
     f.push_back(a);
     principal.initializareGrafic(f);
 
