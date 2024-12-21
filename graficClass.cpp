@@ -55,13 +55,11 @@ void grafic::initializareGrafic(vector<functie> &functii)
     window.setFramerateLimit(30);
     while (window.isOpen())
     {
-        // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         bool nevoieDeRecalculare=false;
         bool isInputActive = false;
         while (window.pollEvent(event))
         {
-            // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed)
@@ -115,7 +113,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
             functii[0].calcularePuncte(capatStanga, capatDreapta, delta);
             cout<<delta<<'\n';
         }
-        /// aici se face desenul in sine 
+        /// aici se face desenul
         window.clear(sf::Color::White);
         window.draw(lines);
         window.draw(button);
@@ -218,8 +216,8 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
     {
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
         sf::Vector2f punct(
-            centru.x + xPunct * diviziune, // Map x to pixel coordinates
-            centru.y - yPunct * diviziune  // Map y to pixel coordinates
+            centru.x + xPunct * diviziune, // Mapam x la coordonate
+            centru.y - yPunct * diviziune  // Mapam y la coordonate
         );
         linieCurbata.append(sf::Vertex(punct, sf::Color::Black));
     }
