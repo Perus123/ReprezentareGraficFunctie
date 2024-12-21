@@ -5,73 +5,68 @@ functie::functie()
     input = "";
 }
 
-double executareFunctie(double variabila, const functie &a)
-{
-    stack<double> stiva;
-    if(a.sirPostfix.size()==0)
-        return 0;
-    int i = 0;
-
-    for (int i = 0; i < a.sirPostfix.size(); i++)
-    {
-        // incepem prin a separa variabilele si le punem pe stiva
-        string element = a.sirPostfix[i];
-        if (element == "x")
-            stiva.push(variabila);
-        else if (isdigit(element[0]))
-            stiva.push(stof(element));
-        else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
-        {
-            double var = stiva.top();
+   double executareFunctie(double variabila, const functie &a){
+   stack<double> stiva;
+   int i = 0;
+   for (int i = 0; i < a.sirPostfix.size(); i++)
+   {
+      // incepem prin a separa variabilele si le punem pe stiva
+      string element = a.sirPostfix[i];
+      if (element == "x")
+         stiva.push(variabila);
+      else if (isdigit(element[0]))
+         stiva.push(stof(element));
+      else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
+      {
+         double var = stiva.top();
+         stiva.pop();
+         if (element == "ln")
+         {  
+            if(var<=0)
+               throw invalid_argument("Se calculeaza ln dintr-un numar negativ");
+            var = log(var);
+            stiva.push(var);
+         }
+         else if (element == "cos")
+         {
+            var = cos(var);
+            stiva.push(var);
+         }
+         else if (element == "sin")
+         {
+            var = sin(var);
+            stiva.push(var);
+         }
+         else if (element == "tan")
+         {
+            var = tan(var);
+            stiva.push(var);
+         }
+      }
+      else // avem 2 variabile despartite printr-un operator
+      {
+         double var1 = stiva.top();
+         stiva.pop();
+         
+         double var2 =0;
+         if(stiva.empty()==0){
+            var2=stiva.top();
             stiva.pop();
-            if (element == "ln")
-            {
-                if (var <= 0)
-                    throw invalid_argument("Se calculeaza ln dintr-un numar negativ");
-                var = log(var);
-                stiva.push(var);
-            }
-            else if (element == "cos")
-            {
-                var = cos(var);
-                stiva.push(var);
-            }
-            else if (element == "sin")
-            {
-                var = sin(var);
-                stiva.push(var);
-            }
-            else if (element == "tan")
-            {
-                var = tan(var);
-                stiva.push(var);
-            }
-        }
-        else // avem 2 variabile despartite printr-un operator
-        {
-            double var1 = stiva.top();
-            stiva.pop();
-
-            double var2 = 0;
-            if (stiva.empty() == 0)
-            {
-                var2 = stiva.top();
-                stiva.pop();
-            }
-
-            if (element == "+")
-                stiva.push(var2 + var1);
-            else if (element == "-")
-                stiva.push(var2 - var1);
-            else if (element == "*")
-                stiva.push(var2 * var1);
-            else if (element == "/")
-                stiva.push(var2 / var1);
-            else
-                stiva.push(pow(var2, var1));
-        }
-    }
-    return stiva.top();
+         }
+             
+         if (element == "+")
+            stiva.push(var2 + var1);
+         else if (element == "-")
+            stiva.push(var2 - var1);
+         else if (element == "*")
+            stiva.push(var2 * var1);
+         else if (element == "/")
+            stiva.push(var2 / var1);
+         else
+            stiva.push(pow(var2, var1));
+      }
+   }
+   return stiva.top();
 }
 
 void functie::calcularePuncte(double start, double end, double delta)
