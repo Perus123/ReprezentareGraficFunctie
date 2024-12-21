@@ -4,6 +4,11 @@ void grafic::calculareDeltasiDivizune()
     delta = (capatDreapta - capatStanga) / numarPuncte;
     diviziune = latimeEcran / (capatDreapta - capatStanga);
 }
+bool isMouseOverButton(const sf::RectangleShape& button, const sf::RenderWindow& window) {
+    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+    sf::FloatRect buttonBounds = button.getGlobalBounds();
+    return buttonBounds.contains(static_cast<sf::Vector2f>(mousePosition));
+}
 grafic::grafic(double screenWidth, double screenHeight)
 {
     centru.x = screenWidth / 2;
@@ -19,7 +24,19 @@ grafic::grafic(double screenWidth, double screenHeight)
 void grafic::initializareGrafic(vector<functie> &functii)
 {
     sf::RenderWindow window(sf::VideoMode(latimeEcran, inaltimeEcran), "My window");
-
+    sf::Font f;
+    if (!f.loadFromFile("TIMES.ttf")) 
+        return;
+    sf::RectangleShape button(sf::Vector2f(200, 50));
+    button.setFillColor(sf::Color::Blue);
+    button.setPosition(0, 0);
+    // Creează textul pentru buton
+    sf::Text buttonText;
+    buttonText.setFont(f);
+    buttonText.setString("Introduce funcția");
+    buttonText.setCharacterSize(20);
+    buttonText.setFillColor(sf::Color::Black);
+    buttonText.setPosition(button.getPosition().x + 20, button.getPosition().y + 10);
     // Setăm punctele pentru două linii 
     sf::VertexArray lines(sf::Lines, 4);
     setareLinii(lines);
@@ -34,12 +51,14 @@ void grafic::initializareGrafic(vector<functie> &functii)
         {sf::Keyboard::Up, false},
         {sf::Keyboard::Down, false}
     };
+    string userInput;
     window.setFramerateLimit(30);
     while (window.isOpen())
     {
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         bool nevoieDeRecalculare=false;
+        bool isInputActive = false;
         while (window.pollEvent(event))
         {
             // "close requested" event: we close the window
@@ -67,6 +86,28 @@ void grafic::initializareGrafic(vector<functie> &functii)
                 }
                 //recalculare pentru toate functiile
             }
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                if (isMouseOverButton(button, window)) {
+                    isInputActive = true;
+                }
+            }
+            if (isInputActive && event.type == sf::Event::TextEntered) {
+                if (event.text.unicode == '\b') { // Backspace
+                    if (!userInput.empty()) userInput.pop_back();
+                } else if (event.text.unicode == '\r') { // Enter
+                    isInputActive = false; // Dezactivează introducerea textului
+                    std::cout << "Text introdus: " << userInput << "\n";
+                } else if (event.text.unicode < 128) { // Adaugă caractere ASCII
+                    userInput += static_cast<char>(event.text.unicode);
+                }
+                 // Actualizează textul afișat
+            }
+        }
+        
+        if (isMouseOverButton(button, window)) {
+            button.setFillColor(sf::Color::White);
+        } else {
+            button.setFillColor(sf::Color::Blue);
         }
         setareLinii(lines);
         miscareEcran(tastaApasata, nevoieDeRecalculare);
@@ -77,6 +118,8 @@ void grafic::initializareGrafic(vector<functie> &functii)
         /// aici se face desenul in sine 
         window.clear(sf::Color::White);
         window.draw(lines);
+        window.draw(button);
+        window.draw(buttonText);
         deseneazaNumere(window);
         deseneazaLiniaFunctiei(window, functii[0]);
         window.display();
