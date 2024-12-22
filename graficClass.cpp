@@ -1,4 +1,31 @@
 #include "header.hpp"
+
+class textBox{
+    public:
+    sf::RectangleShape chenar, butonStergere; 
+    sf::Text textChenar, textButon;
+    
+    textBox(sf::Font &f){
+       
+        chenar.setSize(sf::Vector2f(400, 40));
+        chenar.setFillColor(sf::Color::White);
+        chenar.setOutlineThickness(2);
+        chenar.setOutlineColor(sf::Color::Black);
+        butonStergere.setSize(sf::Vector2f(100, 40));
+        butonStergere.setFillColor(sf::Color::Green);
+        butonStergere.setOutlineThickness(2);
+        butonStergere.setOutlineColor(sf::Color::Black);
+        textChenar.setFont(f);
+        textChenar.setString("");
+        textChenar.setCharacterSize(15);
+        textChenar.setFillColor(sf::Color::Black);
+        textButon.setFont(f);
+        textButon.setString("Sterge");
+        textButon.setCharacterSize(15);
+        textButon.setFillColor(sf::Color::Black);
+        
+    }
+};
 void grafic::calculareDeltasiDivizune()
 { // functie pentru  calcula delta constant, in functie de capetele intervalului etc
     delta = (capatDreapta - capatStanga) / numarPuncte;
@@ -77,6 +104,8 @@ void grafic::initializareGrafic(vector<functie> &functii)
     errorText.setFillColor(sf::Color::Red);
     errorText.setPosition(10, 60);
 
+    sf::Vector2f coordonateAfisareFunctie={10.0, 55.0}; ///10 spatiu + 40 input + 5 bordura
+    vector<textBox> chenareFunctii;
     // Setup for coordinate system
     sf::VertexArray lines(sf::Lines, 4);
     setareLinii(lines);
@@ -123,6 +152,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
                             try
                             {
                                 functie newFunc;
+                                textBox newChenar(font);
                                 newFunc.input = currentInput;
                                 /// curatareInput(newFunc.input);
                                 if (newFunc.input.empty())
@@ -133,6 +163,8 @@ void grafic::initializareGrafic(vector<functie> &functii)
                                 newFunc.calculareOrdinePostfix();
                                 newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
                                 functii.push_back(newFunc);
+                                newChenar.textChenar.setString(newFunc.input);
+                                chenareFunctii.push_back(newChenar);
                                 needsRecalculation = false;
                                 isInputActive=false;
                                 errorText.setString("");
@@ -168,6 +200,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
                         try
                         {
                             functie newFunc;
+                            textBox newChenar(font);
                             newFunc.input = currentInput;
                             /// curatareInput(newFunc.input);
                             if (newFunc.input.empty())
@@ -178,6 +211,8 @@ void grafic::initializareGrafic(vector<functie> &functii)
                             newFunc.calculareOrdinePostfix();
                             newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
                             functii.push_back(newFunc);
+                            newChenar.textChenar.setString(newFunc.input);
+                            chenareFunctii.push_back(newChenar);
                             needsRecalculation = false;
                             errorText.setString("");
                             isInputActive = false;
@@ -251,7 +286,17 @@ void grafic::initializareGrafic(vector<functie> &functii)
 
         // Drawing
         window.clear(sf::Color::White);
-
+        for(int i=0; i<chenareFunctii.size();i++)
+        {   
+            chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y+i*40));
+            chenareFunctii[i].textChenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+5, coordonateAfisareFunctie.y+i*40+5));
+            chenareFunctii[i].butonStergere.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+410, coordonateAfisareFunctie.y+i*40));
+            chenareFunctii[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+415, coordonateAfisareFunctie.y+i*40+5));
+            window.draw(chenareFunctii[i].butonStergere);
+            window.draw(chenareFunctii[i].chenar);
+            window.draw(chenareFunctii[i].textChenar);
+            window.draw(chenareFunctii[i].textButon);
+        }
         // Draw coordinate system
         window.draw(lines);
         deseneazaNumere(window);
