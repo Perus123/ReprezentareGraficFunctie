@@ -2,7 +2,6 @@
 void grafic::calculareDeltasiDivizune()
 { // functie pentru  calcula delta constant, in functie de capetele intervalului etc
     delta = (capatDreapta - capatStanga) / numarPuncte;
-    diviziune = latimeEcran / (capatDreapta - capatStanga);
 }
 /*bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)
 {
@@ -18,6 +17,7 @@ grafic::grafic(double screenWidth, double screenHeight)
     capatDreapta = 10; /// coordonate stanga si dreapta
     latimeEcran = screenWidth;
     inaltimeEcran = screenHeight;
+    diviziune=latimeEcran/20;
     calculareDeltasiDivizune();
     /// capatSus = floor(screenHeight / (diviziune * 2));
     ////capatJos = -capatSus; /// calculare sus si jos, in functie de diviziuna initiala
@@ -84,7 +84,6 @@ void grafic::initializareGrafic(vector<functie> &functii)
     string currentInput;
     bool isInputActive = false;
     bool needsRecalculation = false;
-    bool hasFunction = false; // New flag to track if we have a valid function to display
 
     // Clear any existing functions
     functii.clear();
@@ -95,7 +94,8 @@ void grafic::initializareGrafic(vector<functie> &functii)
     window.setFramerateLimit(60);
 
     while (window.isOpen())
-    {
+    {   
+        cout<<diviziune<<'\n';
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -124,25 +124,22 @@ void grafic::initializareGrafic(vector<functie> &functii)
                             {
                                 functie newFunc;
                                 newFunc.input = currentInput;
-                                curatareInput(newFunc.input);
+                                /// curatareInput(newFunc.input);
                                 if (newFunc.input.empty())
                                 {
                                     errorText.setString("Invalid function format!");
-                                    hasFunction = false;
                                     continue;
                                 }
                                 newFunc.calculareOrdinePostfix();
                                 newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
-                                functii.clear();
                                 functii.push_back(newFunc);
-                                hasFunction = true;
                                 needsRecalculation = false;
+                                isInputActive=false;
                                 errorText.setString("");
                             }
                             catch (const std::exception &e)
                             {
                                 errorText.setString(e.what());
-                                hasFunction = false;
                             }
                         }
                     }
@@ -172,18 +169,15 @@ void grafic::initializareGrafic(vector<functie> &functii)
                         {
                             functie newFunc;
                             newFunc.input = currentInput;
-                            curatareInput(newFunc.input);
+                            /// curatareInput(newFunc.input);
                             if (newFunc.input.empty())
                             {
                                 errorText.setString("Invalid function format!");
-                                hasFunction = false;
                                 continue;
                             }
                             newFunc.calculareOrdinePostfix();
                             newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
-                            functii.clear();
                             functii.push_back(newFunc);
-                            hasFunction = true;
                             needsRecalculation = false;
                             errorText.setString("");
                             isInputActive = false;
@@ -192,7 +186,6 @@ void grafic::initializareGrafic(vector<functie> &functii)
                         catch (const std::exception &e)
                         {
                             errorText.setString(e.what());
-                            hasFunction = false;
                         }
                     }
                 }
@@ -232,18 +225,19 @@ void grafic::initializareGrafic(vector<functie> &functii)
         }
 
         // Handle continuous movement
-        if (hasFunction)
+        if (!isInputActive)
         { // Only allow movement if we have a function
             miscareEcran(keyStates, needsRecalculation);
             setareLinii(lines);
         }
 
         // Recalculate points if needed
-        if (needsRecalculation && hasFunction && !functii.empty())
-        {
-            functii[0].calcularePuncte(capatStanga, capatDreapta, delta);
-            needsRecalculation = false;
-        }
+        if (needsRecalculation == true)
+            for (int i = 0; i < functii.size(); i++)
+            {
+                functii[i].calcularePuncte(capatStanga, capatDreapta, delta);
+                needsRecalculation = false;
+            }
 
         // Update hover effects
         if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
@@ -263,9 +257,9 @@ void grafic::initializareGrafic(vector<functie> &functii)
         deseneazaNumere(window);
 
         // Draw function only if we have a valid one
-        if (hasFunction && !functii.empty())
+        for (int i = 0; i < functii.size(); i++)
         {
-            deseneazaLiniaFunctiei(window, functii[0]);
+            deseneazaLiniaFunctiei(window, functii[i]);
         }
 
         // Draw UI elements
@@ -368,7 +362,8 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
 {
     sf::VertexArray linieCurbata(sf::LineStrip);
     for (int i = 0; i < functiaCurenta.valori.size(); i++)
-    {
+    {   
+
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
         sf::Vector2f punct(
             centru.x + xPunct * diviziune, // Mapam x la coordonate
@@ -377,6 +372,35 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
         linieCurbata.append(sf::Vertex(punct, sf::Color::Black));
     }
     window.draw(linieCurbata);
+    for (int i = 1; i < functiaCurenta.valori.size() - 1; i++) // Sărim peste primul și ultimul punct
+    {
+        double prevY = functiaCurenta.valori[i - 1].y;
+        double currY = functiaCurenta.valori[i].y;
+        double nextY = functiaCurenta.valori[i + 1].y;
+
+        // Convertim punctul curent la coordonate pe grafic
+        double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
+        sf::Vector2f punct(
+            centru.x + xPunct * diviziune,
+            centru.y - yPunct * diviziune
+        );
+
+        // Verificăm dacă este minim sau maxim
+        if (currY < prevY && currY < nextY) // Minimul local
+        {
+            sf::CircleShape punctMinim(5.0f); // Raza cercului
+            punctMinim.setFillColor(sf::Color::Green); // Verde pentru minim
+            punctMinim.setPosition(punct.x - 5, punct.y - 5); // Centrăm cercul
+            window.draw(punctMinim);
+        }
+        else if (currY > prevY && currY > nextY) // Maximul local
+        {
+            sf::CircleShape punctMaxim(5.0f); // Raza cercului
+            punctMaxim.setFillColor(sf::Color::Red); // Roșu pentru maxim
+            punctMaxim.setPosition(punct.x - 5, punct.y - 5); // Centrăm cercul
+            window.draw(punctMaxim);
+        }
+    }
 }
 void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)
 {
@@ -420,5 +444,8 @@ void grafic::schimbareZoom(const double ConstantaDeZoom)
 
     capatStanga *= ConstantaDeZoom;
     capatDreapta *= ConstantaDeZoom;
+    
     calculareDeltasiDivizune();
+    diviziune*=(1/ConstantaDeZoom);
 }
+
