@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 using namespace std;
+double extern zoomLevel;
 bool isoperator(char c);
 int prioritateOperator(char c);
 int prioritateOperator(const string &c);
@@ -55,4 +56,5 @@ public:
 bool estefunctie(const string &s);
 bool isoperand(char c);
 void curatareInput(string &s);
+void setText(sf::Text &text, sf::Font &font, double value, double abscisa, double ordonata);
 #endif
