@@ -285,18 +285,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         }
 
         // Drawing
-        window.clear(sf::Color::White);
-        for(int i=0; i<chenareFunctii.size();i++)
-        {   
-            chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y+i*40));
-            chenareFunctii[i].textChenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+5, coordonateAfisareFunctie.y+i*40+5));
-            chenareFunctii[i].butonStergere.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+410, coordonateAfisareFunctie.y+i*40));
-            chenareFunctii[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+415, coordonateAfisareFunctie.y+i*40+5));
-            window.draw(chenareFunctii[i].butonStergere);
-            window.draw(chenareFunctii[i].chenar);
-            window.draw(chenareFunctii[i].textChenar);
-            window.draw(chenareFunctii[i].textButon);
-        }
+        
         // Draw coordinate system
         window.draw(lines);
         deseneazaNumere(window);
@@ -313,6 +302,18 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
+        window.clear(sf::Color::White);
+        for(int i=0; i<chenareFunctii.size();i++)
+        {   
+            chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y+i*40));
+            chenareFunctii[i].textChenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+5, coordonateAfisareFunctie.y+i*40+5));
+            chenareFunctii[i].butonStergere.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+410, coordonateAfisareFunctie.y+i*40));
+            chenareFunctii[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x+415, coordonateAfisareFunctie.y+i*40+5));
+            window.draw(chenareFunctii[i].butonStergere);
+            window.draw(chenareFunctii[i].chenar);
+            window.draw(chenareFunctii[i].textChenar);
+            window.draw(chenareFunctii[i].textButon);
+        }
 
         window.display();
     }
