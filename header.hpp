@@ -43,6 +43,7 @@ public:
    double delta, diviziune;
    double latimeEcran, inaltimeEcran;
    double capatSus, capatJos;
+   double displacementX, displacementY;
    grafic(double screenWidth, double screenHeight);
    void calculareDeltasiDivizune();
    void initializareGrafic(vector<functie> &functii);

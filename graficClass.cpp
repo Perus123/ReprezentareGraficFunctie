@@ -41,7 +41,9 @@ void grafic::calculareDeltasiDivizune()
 grafic::grafic(double screenWidth, double screenHeight)
 {
     centru.x = screenWidth / 2;
-    centru.y = screenHeight / 2; /// coordonate centru
+    centru.y = screenHeight / 2;
+    displacementX=0;
+    displacementY=0;
     capatStanga = -10;
     capatDreapta = 10; /// coordonate stanga si dreapta
     latimeEcran = screenWidth;
@@ -415,9 +417,9 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
         // Convertim punctul curent la coordonate pe grafic
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
         sf::Vector2f punct(
-            centru.x + xPunct * diviziune,
-            centru.y - yPunct * diviziune);
-
+            centru.x + xPunct * (diviziune*(1.0/zoomLevel)), // Mapam x la coordonate
+            centru.y - yPunct * (diviziune*(1.0/zoomLevel))
+        );
         // Verificăm dacă este minim sau maxim
         if (currY < prevY && currY < nextY) // Minimul local
         {
@@ -435,29 +437,33 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
         }
     }
 }
-void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)
+void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)\
 {
 
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
         centru.y += diviziune;
+        displacementY++;
     }
     if (keyStates.at(sf::Keyboard::S) || keyStates.at(sf::Keyboard::Down))
     {
         centru.y -= diviziune;
+        displacementY--;
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
         centru.x += diviziune;
-        capatStanga -= 1;
-        capatDreapta -= 1;
+        displacementX++;
+        capatStanga -= zoomLevel;
+        capatDreapta -= zoomLevel;
         recalculPuncte = true;
     }
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
         centru.x -= diviziune;
-        capatStanga += 1;
-        capatDreapta += 1;
+        displacementY--;
+        capatStanga += zoomLevel;
+        capatDreapta += zoomLevel;
         recalculPuncte = true;
     }
 }
@@ -474,13 +480,14 @@ void grafic::setareLinii(sf::VertexArray &lines)
 }
 void grafic::schimbareZoom(const double ConstantaDeZoom)
 {
-
+    //centru.x-=diviziune*displacementX;
+    //centru.y-=diviziune*displacementY;
     capatStanga *= ConstantaDeZoom;
     capatDreapta *= ConstantaDeZoom;
     zoomLevel*=ConstantaDeZoom;
 
     calculareDeltasiDivizune();
-   /// diviziune *= (1 / ConstantaDeZoom);
+    /// diviziune *= (1 / ConstantaDeZoom);
 }
 void setText(sf::Text &text, sf::Font &font, double value, double abscisa, double ordonata)
 {
