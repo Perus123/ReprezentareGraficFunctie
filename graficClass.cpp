@@ -128,7 +128,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
 
     while (window.isOpen())
     {
-        cout << diviziune << '\n';
+        
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -307,7 +307,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-       
+        cout<<(centru.x-latimeEcran/2)<<" "<<(centru.y-inaltimeEcran/2)<<'\n';
         for (int i = 0; i < chenareFunctii.size(); i++)
         {
             chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
@@ -453,7 +453,7 @@ void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
         centru.x += diviziune;
-        displacementX++;
+        displacementX--;
         capatStanga -= zoomLevel;
         capatDreapta -= zoomLevel;
         recalculPuncte = true;
@@ -461,7 +461,7 @@ void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
         centru.x -= diviziune;
-        displacementY--;
+        displacementX++;
         capatStanga += zoomLevel;
         capatDreapta += zoomLevel;
         recalculPuncte = true;
@@ -479,9 +479,23 @@ void grafic::setareLinii(sf::VertexArray &lines)
     lines[3].color = sf::Color::Black;
 }
 void grafic::schimbareZoom(const double ConstantaDeZoom)
-{
-    //centru.x-=diviziune*displacementX;
-    //centru.y-=diviziune*displacementY;
+{   
+    if(ConstantaDeZoom>1){
+        centru.x-=(centru.x-latimeEcran/2)/2;
+        centru.y-=(centru.y-inaltimeEcran/2)/2;
+        if(abs(centru.x-latimeEcran/2)<1)
+            centru.x=latimeEcran/2;
+        if(abs(centru.y-inaltimeEcran/2)<1)
+            centru.y=inaltimeEcran/2;
+        
+    }
+    else{
+        centru.x+=(centru.x-latimeEcran/2);
+        centru.y+=(centru.y-inaltimeEcran/2);
+        
+    }
+    
+    
     capatStanga *= ConstantaDeZoom;
     capatDreapta *= ConstantaDeZoom;
     zoomLevel*=ConstantaDeZoom;
