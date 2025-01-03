@@ -83,14 +83,16 @@ void grafic::initializareGrafic(vector<functie> &functii)
     sf::RectangleShape enterButton(sf::Vector2f(100, 40));
     enterButton.setPosition(420, 10);
     enterButton.setFillColor(sf::Color::Green);
+    enterButton.setOutlineThickness(2);
+    enterButton.setOutlineColor(sf::Color::Black);
 
     // Enter button text
     sf::Text enterButtonText;
     enterButtonText.setFont(font);
     enterButtonText.setString("Plot");
-    enterButtonText.setCharacterSize(20);
-    enterButtonText.setFillColor(sf::Color::White);
-    enterButtonText.setPosition(445, 20);
+    enterButtonText.setCharacterSize(15);
+    enterButtonText.setFillColor(sf::Color::Black);
+    enterButtonText.setPosition(425, 20);
 
     // Error message setup
     sf::Text errorText;
@@ -108,10 +110,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
     string currentInput;
     bool isInputActive = false;
     bool needsRecalculation = false;
-
-    // Clear any existing functions
     functii.clear();
-
     unordered_map<sf::Keyboard::Key, bool> keyStates = {
         {sf::Keyboard::W, false}, {sf::Keyboard::A, false}, {sf::Keyboard::S, false}, {sf::Keyboard::D, false}, {sf::Keyboard::Left, false}, {sf::Keyboard::Right, false}, {sf::Keyboard::Up, false}, {sf::Keyboard::Down, false}};
 
@@ -133,7 +132,16 @@ void grafic::initializareGrafic(vector<functie> &functii)
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    // Check if clicked on input box
+                    for(vector<textBox>::iterator i = chenareFunctii.begin(); i!=chenareFunctii.end();)
+                    {   
+                        textBox auxButton=*i;
+                        if(auxButton.butonStergere.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)){
+                            chenareFunctii.erase(i);
+                            functii.erase(functii.begin()+(i-chenareFunctii.begin()));
+                        }
+                        else
+                            i++;
+                    }
                     if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                     {
                         isInputActive = true;
@@ -144,30 +152,19 @@ void grafic::initializareGrafic(vector<functie> &functii)
                     {
                         if (!currentInput.empty())
                         {
-                            try
-                            {
-                                functie newFunc;
-                                textBox newChenar(font);
-                                newFunc.input = currentInput;
-                                /// curatareInput(newFunc.input);
-                                if (newFunc.input.empty())
-                                {
-                                    errorText.setString("Invalid function format!");
-                                    continue;
-                                }
-                                newFunc.calculareOrdinePostfix();
-                                newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
-                                functii.push_back(newFunc);
-                                newChenar.textChenar.setString(newFunc.input);
-                                chenareFunctii.push_back(newChenar);
-                                needsRecalculation = false;
-                                isInputActive = false;
-                                errorText.setString("");
-                            }
-                            catch (const std::exception &e)
-                            {
-                                errorText.setString(e.what());
-                            }
+
+                            functie newFunc;
+                            textBox newChenar(font);
+                            newFunc.input = currentInput;
+                            /// curatareInput(newFunc.input);
+                            newFunc.calculareOrdinePostfix();
+                            newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
+                            functii.push_back(newFunc);
+                            newChenar.textChenar.setString(newFunc.input);
+                            chenareFunctii.push_back(newChenar);
+                            needsRecalculation = false;
+                            isInputActive = false;
+                            errorText.setString("");
                         }
                     }
                     else
@@ -192,31 +189,20 @@ void grafic::initializareGrafic(vector<functie> &functii)
                 { // Enter key
                     if (!currentInput.empty())
                     {
-                        try
-                        {
-                            functie newFunc;
-                            textBox newChenar(font);
-                            newFunc.input = currentInput;
-                            /// curatareInput(newFunc.input);
-                            if (newFunc.input.empty())
-                            {
-                                errorText.setString("Invalid function format!");
-                                continue;
-                            }
-                            newFunc.calculareOrdinePostfix();
-                            newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
-                            functii.push_back(newFunc);
-                            newChenar.textChenar.setString(newFunc.input);
-                            chenareFunctii.push_back(newChenar);
-                            needsRecalculation = false;
-                            errorText.setString("");
-                            isInputActive = false;
-                            inputBox.setOutlineColor(sf::Color::Black);
-                        }
-                        catch (const std::exception &e)
-                        {
-                            errorText.setString(e.what());
-                        }
+
+                        functie newFunc;
+                        textBox newChenar(font);
+                        newFunc.input = currentInput;
+                        /// curatareInput(newFunc.input);
+                        newFunc.calculareOrdinePostfix();
+                        newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
+                        functii.push_back(newFunc);
+                        newChenar.textChenar.setString(newFunc.input);
+                        chenareFunctii.push_back(newChenar);
+                        needsRecalculation = false;
+                        errorText.setString("");
+                        isInputActive = false;
+                        inputBox.setOutlineColor(sf::Color::Black);
                     }
                 }
                 else if (event.text.unicode < 128)
@@ -262,7 +248,6 @@ void grafic::initializareGrafic(vector<functie> &functii)
         }
 
         // Recalculate points if needed
-        
 
         // Update hover effects
         if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
@@ -301,7 +286,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        cout << capatStanga<< " " <<capatDreapta << '\n';
+        cout << capatStanga << " " << capatDreapta << '\n';
         for (int i = 0; i < chenareFunctii.size(); i++)
         {
             chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
@@ -326,7 +311,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         cerr << "Eroare: Fontul nu a putut fi incarcat\n";
         return;
     }
-    
+
     double abscisa = centru.x, ordonata = centru.y;
     double index = 0;
     double step = zoomLevel;
@@ -342,7 +327,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         ordonata -= diviziune;
         index += step;
     }
-   
+
     ordonata = centru.y + diviziune;
     index = -step;
     while (ordonata <= inaltimeEcran)
@@ -371,7 +356,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         abscisa -= diviziune;
         index -= step;
     }
-    capatStanga=index;
+    capatStanga = index;
     abscisa = centru.x + diviziune;
     index = step;
     while (abscisa < latimeEcran)
@@ -386,7 +371,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         abscisa += diviziune;
         index += step;
     }
-    capatDreapta=index;
+    capatDreapta = index;
 }
 void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &functiaCurenta)
 {
@@ -436,8 +421,8 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
     }
 }
 void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)
-{   
-    
+{
+
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
         centru.y += diviziune;
@@ -448,7 +433,7 @@ void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
-        centru.x += diviziune;  
+        centru.x += diviziune;
         recalculPuncte = true;
     }
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
