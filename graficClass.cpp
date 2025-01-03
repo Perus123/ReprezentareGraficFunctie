@@ -262,12 +262,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         }
 
         // Recalculate points if needed
-        if (needsRecalculation == true)
-            for (int i = 0; i < functii.size(); i++)
-            {
-                functii[i].calcularePuncte(capatStanga, capatDreapta, delta);
-                needsRecalculation = false;
-            }
+        
 
         // Update hover effects
         if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
@@ -285,6 +280,14 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.clear(sf::Color::White);
         window.draw(lines);
         deseneazaNumere(window);
+        if (needsRecalculation == true)
+        {
+            for (int i = 0; i < functii.size(); i++)
+            {
+                functii[i].calcularePuncte(capatStanga, capatDreapta, delta);
+            }
+            needsRecalculation = false;
+        }
 
         // Draw function only if we have a valid one
         for (int i = 0; i < functii.size(); i++)
@@ -298,7 +301,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        cout << (centru.x - latimeEcran / 2) << " " << (centru.y - inaltimeEcran / 2) << '\n';
+        cout << capatStanga<< " " <<capatDreapta << '\n';
         for (int i = 0; i < chenareFunctii.size(); i++)
         {
             chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
@@ -323,7 +326,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         cerr << "Eroare: Fontul nu a putut fi incarcat\n";
         return;
     }
-    /// generare stanga - 0
+    
     double abscisa = centru.x, ordonata = centru.y;
     double index = 0;
     double step = zoomLevel;
@@ -339,7 +342,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         ordonata -= diviziune;
         index += step;
     }
-    /// generare 0 - dreapta
+   
     ordonata = centru.y + diviziune;
     index = -step;
     while (ordonata <= inaltimeEcran)
@@ -354,7 +357,6 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         ordonata += diviziune;
         index -= step;
     }
-    /// generare 0 - sus
     abscisa = centru.x - diviziune, ordonata = centru.y;
     index = -step;
     while (abscisa > 0)
@@ -369,10 +371,10 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         abscisa -= diviziune;
         index -= step;
     }
-    /// generare 0 - jos
+    capatStanga=index;
     abscisa = centru.x + diviziune;
     index = step;
-    while (abscisa <= latimeEcran)
+    while (abscisa < latimeEcran)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscisa, ordonata);
@@ -384,6 +386,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         abscisa += diviziune;
         index += step;
     }
+    capatDreapta=index;
 }
 void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &functiaCurenta)
 {
@@ -392,6 +395,8 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
     {
 
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
+        if (yPunct == NAN)
+            continue;
         sf::Vector2f punct(
             centru.x + xPunct * (diviziune * (1.0 / zoomLevel)), // Mapam x la coordonate
             centru.y - yPunct * (diviziune * (1.0 / zoomLevel))  // Mapam y la coordonate
@@ -404,7 +409,9 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
         double prevY = functiaCurenta.valori[i - 1].y;
         double currY = functiaCurenta.valori[i].y;
         double nextY = functiaCurenta.valori[i + 1].y;
-        double diff=abs(functiaCurenta.valori[i-1].x-functiaCurenta.valori[i].x);
+        if (prevY == NAN || currY == NAN || nextY == NAN)
+            continue;
+        double diff = abs(functiaCurenta.valori[i - 1].x - functiaCurenta.valori[i].x);
 
         // Convertim punctul curent la coordonate pe grafic
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
@@ -412,14 +419,14 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
             centru.x + xPunct * (diviziune * (1.0 / zoomLevel)), // Mapam x la coordonate
             centru.y - yPunct * (diviziune * (1.0 / zoomLevel)));
         // Verificăm dacă este minim sau maxim
-        if (currY < prevY && currY < nextY && diff<1) // Minimul local
+        if (currY < prevY && currY < nextY && diff < 1) // Minimul local
         {
             sf::CircleShape punctMinim(5.0f);                 // Raza cercului
             punctMinim.setFillColor(sf::Color::Green);        // Verde pentru minim
             punctMinim.setPosition(punct.x - 5, punct.y - 5); // Centrăm cercul
             window.draw(punctMinim);
         }
-        else if (currY > prevY && currY > nextY&& diff<1) // Maximul local
+        else if (currY > prevY && currY > nextY && diff < 1) // Maximul local
         {
             sf::CircleShape punctMaxim(5.0f);                 // Raza cercului
             punctMaxim.setFillColor(sf::Color::Red);          // Roșu pentru maxim
@@ -429,7 +436,8 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
     }
 }
 void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)
-{
+{   
+    
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
         centru.y += diviziune;
@@ -440,16 +448,12 @@ void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
-        centru.x += diviziune;
-        capatStanga -= zoomLevel;
-        capatDreapta -= zoomLevel;
+        centru.x += diviziune;  
         recalculPuncte = true;
     }
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
         centru.x -= diviziune;
-        capatStanga += zoomLevel;
-        capatDreapta += zoomLevel;
         recalculPuncte = true;
     }
 }
