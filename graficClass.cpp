@@ -1,6 +1,6 @@
 #include "header.hpp"
 
-double zoomLevel=1;
+double zoomLevel = 1;
 class textBox
 {
 public:
@@ -29,29 +29,20 @@ public:
     }
 };
 void grafic::calculareDeltasiDivizune()
-{ // functie pentru  calcula delta constant, in functie de capetele intervalului etc
+{
     delta = (capatDreapta - capatStanga) / numarPuncte;
 }
-/*bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)
-{
-    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-    sf::FloatRect buttonBounds = button.getGlobalBounds();
-    return buttonBounds.contains(static_cast<sf::Vector2f>(mousePosition));
-}*/
+
 grafic::grafic(double screenWidth, double screenHeight)
 {
     centru.x = screenWidth / 2;
     centru.y = screenHeight / 2;
-    displacementX=0;
-    displacementY=0;
     capatStanga = -10;
     capatDreapta = 10; /// coordonate stanga si dreapta
     latimeEcran = screenWidth;
     inaltimeEcran = screenHeight;
     diviziune = latimeEcran / 20;
     calculareDeltasiDivizune();
-    /// capatSus = floor(screenHeight / (diviziune * 2));
-    ////capatJos = -capatSus; /// calculare sus si jos, in functie de diviziuna initiala
 }
 
 bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)
@@ -128,7 +119,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
 
     while (window.isOpen())
     {
-        
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -291,7 +282,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         // Drawing
 
         // Draw coordinate system
-         window.clear(sf::Color::White);
+        window.clear(sf::Color::White);
         window.draw(lines);
         deseneazaNumere(window);
 
@@ -307,7 +298,7 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        cout<<(centru.x-latimeEcran/2)<<" "<<(centru.y-inaltimeEcran/2)<<'\n';
+        cout << (centru.x - latimeEcran / 2) << " " << (centru.y - inaltimeEcran / 2) << '\n';
         for (int i = 0; i < chenareFunctii.size(); i++)
         {
             chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
@@ -335,7 +326,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
     /// generare stanga - 0
     double abscisa = centru.x, ordonata = centru.y;
     double index = 0;
-    double step=zoomLevel;
+    double step = zoomLevel;
     while (ordonata > 0)
     {
         sf::Text text;
@@ -346,7 +337,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         sf::Vertex linie[] = {punct1, punct2};
         window.draw(linie, 2, sf::Lines);
         ordonata -= diviziune;
-        index+=step;
+        index += step;
     }
     /// generare 0 - dreapta
     ordonata = centru.y + diviziune;
@@ -361,7 +352,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         sf::Vertex linie[] = {punct1, punct2};
         window.draw(linie, 2, sf::Lines);
         ordonata += diviziune;
-        index-=step;
+        index -= step;
     }
     /// generare 0 - sus
     abscisa = centru.x - diviziune, ordonata = centru.y;
@@ -376,7 +367,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         sf::Vertex linie[] = {punct1, punct2};
         window.draw(linie, 2, sf::Lines);
         abscisa -= diviziune;
-        index-=step;
+        index -= step;
     }
     /// generare 0 - jos
     abscisa = centru.x + diviziune;
@@ -391,7 +382,7 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         sf::Vertex linie[] = {punct1, punct2};
         window.draw(linie, 2, sf::Lines);
         abscisa += diviziune;
-        index+=step;
+        index += step;
     }
 }
 void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &functiaCurenta)
@@ -402,8 +393,8 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
 
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
         sf::Vector2f punct(
-            centru.x + xPunct * (diviziune*(1.0/zoomLevel)), // Mapam x la coordonate
-            centru.y - yPunct * (diviziune*(1.0/zoomLevel)) // Mapam y la coordonate
+            centru.x + xPunct * (diviziune * (1.0 / zoomLevel)), // Mapam x la coordonate
+            centru.y - yPunct * (diviziune * (1.0 / zoomLevel))  // Mapam y la coordonate
         );
         linieCurbata.append(sf::Vertex(punct, sf::Color::Black));
     }
@@ -413,22 +404,22 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
         double prevY = functiaCurenta.valori[i - 1].y;
         double currY = functiaCurenta.valori[i].y;
         double nextY = functiaCurenta.valori[i + 1].y;
+        double diff=abs(functiaCurenta.valori[i-1].x-functiaCurenta.valori[i].x);
 
         // Convertim punctul curent la coordonate pe grafic
         double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
         sf::Vector2f punct(
-            centru.x + xPunct * (diviziune*(1.0/zoomLevel)), // Mapam x la coordonate
-            centru.y - yPunct * (diviziune*(1.0/zoomLevel))
-        );
+            centru.x + xPunct * (diviziune * (1.0 / zoomLevel)), // Mapam x la coordonate
+            centru.y - yPunct * (diviziune * (1.0 / zoomLevel)));
         // Verificăm dacă este minim sau maxim
-        if (currY < prevY && currY < nextY) // Minimul local
+        if (currY < prevY && currY < nextY && diff<1) // Minimul local
         {
             sf::CircleShape punctMinim(5.0f);                 // Raza cercului
             punctMinim.setFillColor(sf::Color::Green);        // Verde pentru minim
             punctMinim.setPosition(punct.x - 5, punct.y - 5); // Centrăm cercul
             window.draw(punctMinim);
         }
-        else if (currY > prevY && currY > nextY) // Maximul local
+        else if (currY > prevY && currY > nextY&& diff<1) // Maximul local
         {
             sf::CircleShape punctMaxim(5.0f);                 // Raza cercului
             punctMaxim.setFillColor(sf::Color::Red);          // Roșu pentru maxim
@@ -437,23 +428,19 @@ void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &fun
         }
     }
 }
-void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)\
+void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)
 {
-
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
         centru.y += diviziune;
-        displacementY++;
     }
     if (keyStates.at(sf::Keyboard::S) || keyStates.at(sf::Keyboard::Down))
     {
         centru.y -= diviziune;
-        displacementY--;
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
         centru.x += diviziune;
-        displacementX--;
         capatStanga -= zoomLevel;
         capatDreapta -= zoomLevel;
         recalculPuncte = true;
@@ -461,7 +448,6 @@ void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
         centru.x -= diviziune;
-        displacementX++;
         capatStanga += zoomLevel;
         capatDreapta += zoomLevel;
         recalculPuncte = true;
@@ -479,29 +465,27 @@ void grafic::setareLinii(sf::VertexArray &lines)
     lines[3].color = sf::Color::Black;
 }
 void grafic::schimbareZoom(const double ConstantaDeZoom)
-{   
-    if(ConstantaDeZoom>1){
-        centru.x-=(centru.x-latimeEcran/2)/2;
-        centru.y-=(centru.y-inaltimeEcran/2)/2;
-        if(abs(centru.x-latimeEcran/2)<1)
-            centru.x=latimeEcran/2;
-        if(abs(centru.y-inaltimeEcran/2)<1)
-            centru.y=inaltimeEcran/2;
-        
+{
+    if (ConstantaDeZoom > 1)
+    {
+        centru.x -= (centru.x - latimeEcran / 2) / 2;
+        centru.y -= (centru.y - inaltimeEcran / 2) / 2;
+        if (abs(centru.x - latimeEcran / 2) < 1)
+            centru.x = latimeEcran / 2;
+        if (abs(centru.y - inaltimeEcran / 2) < 1)
+            centru.y = inaltimeEcran / 2;
     }
-    else{
-        centru.x+=(centru.x-latimeEcran/2);
-        centru.y+=(centru.y-inaltimeEcran/2);
-        
+    else
+    {
+        centru.x += (centru.x - latimeEcran / 2);
+        centru.y += (centru.y - inaltimeEcran / 2);
     }
-    
-    
+
     capatStanga *= ConstantaDeZoom;
     capatDreapta *= ConstantaDeZoom;
-    zoomLevel*=ConstantaDeZoom;
+    zoomLevel *= ConstantaDeZoom;
 
     calculareDeltasiDivizune();
-    /// diviziune *= (1 / ConstantaDeZoom);
 }
 void setText(sf::Text &text, sf::Font &font, double value, double abscisa, double ordonata)
 {
