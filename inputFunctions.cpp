@@ -3,7 +3,7 @@ bool isoperator(char c)
 {
    return (c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == '^');
 }
-int prioritateOperator(char c)
+int operatorsPriority(char c)
 {
    if (c == '+' || c == '-')
       return 1;
@@ -13,7 +13,7 @@ int prioritateOperator(char c)
       return 3;
    return 0;
 }
-int prioritateOperator(const string &c)
+int operatorsPriority(const string &c)
 {
    if (c[0] == '+' || c[0] == '-')
       return 1;
@@ -31,7 +31,7 @@ void stackdump(vector<string> st)
    for (int i = 0; i < st.size(); i++)
       cout << st[i] << " ";
 }
-bool estefunctie(const string& s)
+bool isFunction(const string& s)
 {
    return (s == "cos" || s == "sin" || s == "tan" || s == "ln");
 }
@@ -67,7 +67,7 @@ void curatareInput(string& s)
          }
          i--;
 
-         if (estefunctie(cuvant)) // daca avem numele unei functii, o adaugam si deschidem o paranteza;
+         if (isFunction(cuvant)) // daca avem numele unei functii, o adaugam si deschidem o paranteza;
          {
             expresie += cuvant;
             expresie += '(';

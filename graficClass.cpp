@@ -1,48 +1,48 @@
 #include "header.hpp"
 
 double zoomLevel = 1;
-class textBox
+class TextofBox
 {
 public:
-    sf::RectangleShape chenar, butonStergere;
-    sf::Text textChenar, textButon;
+    sf::RectangleShape box, deleteButton;
+    sf::Text textBox, textButon;
 
-    textBox(sf::Font &f)
+    TextofBox(sf::Font &f)
     {
 
-        chenar.setSize(sf::Vector2f(400, 40));
-        chenar.setFillColor(sf::Color::White);
-        chenar.setOutlineThickness(2);
-        chenar.setOutlineColor(sf::Color::Black);
-        butonStergere.setSize(sf::Vector2f(100, 40));
-        butonStergere.setFillColor(sf::Color::Green);
-        butonStergere.setOutlineThickness(2);
-        butonStergere.setOutlineColor(sf::Color::Black);
-        textChenar.setFont(f);
-        textChenar.setString("");
-        textChenar.setCharacterSize(15);
-        textChenar.setFillColor(sf::Color::Black);
+        box.setSize(sf::Vector2f(400, 40));
+        box.setFillColor(sf::Color::White);
+        box.setOutlineThickness(2);
+        box.setOutlineColor(sf::Color::Black);
+        deleteButton.setSize(sf::Vector2f(100, 40));
+        deleteButton.setFillColor(sf::Color::Green);
+        deleteButton.setOutlineThickness(2);
+        deleteButton.setOutlineColor(sf::Color::Black);
+        textBox.setFont(f);
+        textBox.setString("");
+        textBox.setCharacterSize(15);
+        textBox.setFillColor(sf::Color::Black);
         textButon.setFont(f);
         textButon.setString("Sterge");
         textButon.setCharacterSize(15);
         textButon.setFillColor(sf::Color::Black);
     }
 };
-void grafic::calculareDeltasiDivizune()
+void grafic::calculateDeltaDivision()
 {
-    delta = (capatDreapta - capatStanga) / numarPuncte;
+    delta = (RightEnd - LeftEnd) / pointsNumber;
 }
 
 grafic::grafic(double screenWidth, double screenHeight)
 {
-    centru.x = screenWidth / 2;
-    centru.y = screenHeight / 2;
-    capatStanga = -10;
-    capatDreapta = 10; /// coordonate stanga si dreapta
+    center.x = screenWidth / 2;
+    center.y = screenHeight / 2;
+    LeftEnd = -10;
+    RightEnd = 10; /// coordonate stanga si dreapta
     latimeEcran = screenWidth;
     inaltimeEcran = screenHeight;
-    diviziune = latimeEcran / 20;
-    calculareDeltasiDivizune();
+    division = latimeEcran / 20;
+    calculateDeltaDivision();
 }
 
 bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)
@@ -54,7 +54,7 @@ bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow 
            mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + buttonSize.y;
 }
 
-void grafic::initializareGrafic(vector<functie> &functii)
+void grafic::initialiseGraphic(vector<function> &functions)
 {
     sf::RenderWindow window(sf::VideoMode(latimeEcran, inaltimeEcran), "Function Plotter");
 
@@ -102,15 +102,15 @@ void grafic::initializareGrafic(vector<functie> &functii)
     errorText.setPosition(10, 60);
 
     sf::Vector2f coordonateAfisareFunctie = {10.0, 55.0}; /// 10 spatiu + 40 input + 5 bordura
-    vector<textBox> chenareFunctii;
+    vector<TextofBox> chenareFunctii;
     // Setup for coordinate system
     sf::VertexArray lines(sf::Lines, 4);
-    setareLinii(lines);
+    settingLines(lines);
 
     string currentInput;
     bool isInputActive = false;
     bool needsRecalculation = false;
-    functii.clear();
+    functions.clear();
     unordered_map<sf::Keyboard::Key, bool> keyStates = {
         {sf::Keyboard::W, false}, {sf::Keyboard::A, false}, {sf::Keyboard::S, false}, {sf::Keyboard::D, false}, {sf::Keyboard::Left, false}, {sf::Keyboard::Right, false}, {sf::Keyboard::Up, false}, {sf::Keyboard::Down, false}};
 
@@ -132,12 +132,12 @@ void grafic::initializareGrafic(vector<functie> &functii)
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    for(vector<textBox>::iterator i = chenareFunctii.begin(); i!=chenareFunctii.end();)
+                    for(vector<TextofBox>::iterator i = chenareFunctii.begin(); i!=chenareFunctii.end();)
                     {   
-                        textBox auxButton=*i;
-                        if(auxButton.butonStergere.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)){
+                        TextofBox auxButton=*i;
+                        if(auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)){
                             chenareFunctii.erase(i);
-                            functii.erase(functii.begin()+(i-chenareFunctii.begin()));
+                            functions.erase(functions.begin()+(i-chenareFunctii.begin()));
                         }
                         else
                             i++;
@@ -153,14 +153,14 @@ void grafic::initializareGrafic(vector<functie> &functii)
                         if (!currentInput.empty())
                         {
 
-                            functie newFunc;
-                            textBox newChenar(font);
+                            function newFunc;
+                            TextofBox newChenar(font);
                             newFunc.input = currentInput;
                             /// curatareInput(newFunc.input);
-                            newFunc.calculareOrdinePostfix();
-                            newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
-                            functii.push_back(newFunc);
-                            newChenar.textChenar.setString(newFunc.input);
+                            newFunc.postfixOrderCalculation();
+                            newFunc.calculatePoints(LeftEnd, RightEnd, delta);
+                            functions.push_back(newFunc);
+                            newChenar.textBox.setString(newFunc.input);
                             chenareFunctii.push_back(newChenar);
                             needsRecalculation = false;
                             isInputActive = false;
@@ -190,14 +190,14 @@ void grafic::initializareGrafic(vector<functie> &functii)
                     if (!currentInput.empty())
                     {
 
-                        functie newFunc;
-                        textBox newChenar(font);
+                        function newFunc;
+                        TextofBox newChenar(font);
                         newFunc.input = currentInput;
                         /// curatareInput(newFunc.input);
-                        newFunc.calculareOrdinePostfix();
-                        newFunc.calcularePuncte(capatStanga, capatDreapta, delta);
-                        functii.push_back(newFunc);
-                        newChenar.textChenar.setString(newFunc.input);
+                        newFunc.postfixOrderCalculation();
+                        newFunc.calculatePoints(LeftEnd, RightEnd, delta);
+                        functions.push_back(newFunc);
+                        newChenar.textBox.setString(newFunc.input);
                         chenareFunctii.push_back(newChenar);
                         needsRecalculation = false;
                         errorText.setString("");
@@ -222,12 +222,12 @@ void grafic::initializareGrafic(vector<functie> &functii)
                 // Handle zoom
                 if (event.key.code == sf::Keyboard::Add)
                 {
-                    schimbareZoom(0.5);
+                    zoomChange(0.5);
                     needsRecalculation = true;
                 }
                 if (event.key.code == sf::Keyboard::Subtract)
                 {
-                    schimbareZoom(2.0);
+                    zoomChange(2.0);
                     needsRecalculation = true;
                 }
             }
@@ -243,8 +243,8 @@ void grafic::initializareGrafic(vector<functie> &functii)
         // Handle continuous movement
         if (!isInputActive)
         { // Only allow movement if we have a function
-            miscareEcran(keyStates, needsRecalculation);
-            setareLinii(lines);
+            screenMovement(keyStates, needsRecalculation);
+            settingLines(lines);
         }
 
         // Recalculate points if needed
@@ -264,20 +264,20 @@ void grafic::initializareGrafic(vector<functie> &functii)
         // Draw coordinate system
         window.clear(sf::Color::White);
         window.draw(lines);
-        deseneazaNumere(window);
+        drawNumbers(window);
         if (needsRecalculation == true)
         {
-            for (int i = 0; i < functii.size(); i++)
+            for (int i = 0; i < functions.size(); i++)
             {
-                functii[i].calcularePuncte(capatStanga, capatDreapta, delta);
+                functions[i].calculatePoints(LeftEnd, RightEnd, delta);
             }
             needsRecalculation = false;
         }
 
         // Draw function only if we have a valid one
-        for (int i = 0; i < functii.size(); i++)
+        for (int i = 0; i < functions.size(); i++)
         {
-            deseneazaLiniaFunctiei(window, functii[i]);
+            drawFunctionLines(window, functions[i]);
         }
 
         // Draw UI elements
@@ -286,23 +286,23 @@ void grafic::initializareGrafic(vector<functie> &functii)
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        cout << capatStanga << " " << capatDreapta << '\n';
+        cout << LeftEnd << " " << RightEnd << '\n';
         for (int i = 0; i < chenareFunctii.size(); i++)
         {
-            chenareFunctii[i].chenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
-            chenareFunctii[i].textChenar.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 5, coordonateAfisareFunctie.y + i * 40 + 5));
-            chenareFunctii[i].butonStergere.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 410, coordonateAfisareFunctie.y + i * 40));
+            chenareFunctii[i].box.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
+            chenareFunctii[i].textBox.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 5, coordonateAfisareFunctie.y + i * 40 + 5));
+            chenareFunctii[i].deleteButton.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 410, coordonateAfisareFunctie.y + i * 40));
             chenareFunctii[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 415, coordonateAfisareFunctie.y + i * 40 + 5));
-            window.draw(chenareFunctii[i].butonStergere);
-            window.draw(chenareFunctii[i].chenar);
-            window.draw(chenareFunctii[i].textChenar);
+            window.draw(chenareFunctii[i].deleteButton);
+            window.draw(chenareFunctii[i].box);
+            window.draw(chenareFunctii[i].textBox);
             window.draw(chenareFunctii[i].textButon);
         }
 
         window.display();
     }
 }
-void grafic::deseneazaNumere(sf::RenderWindow &window)
+void grafic::drawNumbers(sf::RenderWindow &window)
 {
 
     sf::Font fontTimesNewRoman;
@@ -312,171 +312,171 @@ void grafic::deseneazaNumere(sf::RenderWindow &window)
         return;
     }
 
-    double abscisa = centru.x, ordonata = centru.y;
+    double abscissa = center.x, ordinate = center.y;
     double index = 0;
     double step = zoomLevel;
-    while (ordonata > 0)
+    while (ordinate > 0)
     {
         sf::Text text;
-        setText(text, fontTimesNewRoman, index, abscisa, ordonata);
+        setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         window.draw(text);
-        sf::Vertex punct1(sf::Vector2f(abscisa - 5, ordonata), sf::Color::Black);
-        sf::Vertex punct2(sf::Vector2f(abscisa + 5, ordonata), sf::Color::Black);
-        sf::Vertex linie[] = {punct1, punct2};
+        sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), sf::Color::Black);
+        sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), sf::Color::Black);
+        sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        ordonata -= diviziune;
+        ordinate -= division;
         index += step;
     }
 
-    ordonata = centru.y + diviziune;
+    ordinate = center.y + division;
     index = -step;
-    while (ordonata <= inaltimeEcran)
+    while (ordinate <= inaltimeEcran)
     {
         sf::Text text;
-        setText(text, fontTimesNewRoman, index, abscisa, ordonata);
+        setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         window.draw(text);
-        sf::Vertex punct1(sf::Vector2f(abscisa - 5, ordonata), sf::Color::Black);
-        sf::Vertex punct2(sf::Vector2f(abscisa + 5, ordonata), sf::Color::Black);
-        sf::Vertex linie[] = {punct1, punct2};
+        sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), sf::Color::Black);
+        sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), sf::Color::Black);
+        sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        ordonata += diviziune;
+        ordinate += division;
         index -= step;
     }
-    abscisa = centru.x - diviziune, ordonata = centru.y;
+    abscissa = center.x - division, ordinate = center.y;
     index = -step;
-    while (abscisa > 0)
+    while (abscissa > 0)
     {
         sf::Text text;
-        setText(text, fontTimesNewRoman, index, abscisa, ordonata);
+        setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         window.draw(text);
-        sf::Vertex punct1(sf::Vector2f(abscisa, ordonata - 5), sf::Color::Black);
-        sf::Vertex punct2(sf::Vector2f(abscisa, ordonata + 5), sf::Color::Black);
-        sf::Vertex linie[] = {punct1, punct2};
+        sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), sf::Color::Black);
+        sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), sf::Color::Black);
+        sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        abscisa -= diviziune;
+        abscissa -= division;
         index -= step;
     }
-    capatStanga = index;
-    abscisa = centru.x + diviziune;
+    LeftEnd = index;
+    abscissa = center.x + division;
     index = step;
-    while (abscisa < latimeEcran)
+    while (abscissa < latimeEcran)
     {
         sf::Text text;
-        setText(text, fontTimesNewRoman, index, abscisa, ordonata);
+        setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         window.draw(text);
-        sf::Vertex punct1(sf::Vector2f(abscisa, ordonata - 5), sf::Color::Black);
-        sf::Vertex punct2(sf::Vector2f(abscisa, ordonata + 5), sf::Color::Black);
-        sf::Vertex linie[] = {punct1, punct2};
+        sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), sf::Color::Black);
+        sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), sf::Color::Black);
+        sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        abscisa += diviziune;
+        abscissa += division;
         index += step;
     }
-    capatDreapta = index;
+    RightEnd = index;
 }
-void grafic::deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &functiaCurenta)
+void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction)
 {
     sf::VertexArray linieCurbata(sf::LineStrip);
-    for (int i = 0; i < functiaCurenta.valori.size(); i++)
+    for (int i = 0; i < currentFunction.values.size(); i++)
     {
 
-        double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
+        double xPunct = currentFunction.values[i].x, yPunct = currentFunction.values[i].y;
         if (yPunct == NAN)
             continue;
-        sf::Vector2f punct(
-            centru.x + xPunct * (diviziune * (1.0 / zoomLevel)), // Mapam x la coordonate
-            centru.y - yPunct * (diviziune * (1.0 / zoomLevel))  // Mapam y la coordonate
+        sf::Vector2f point(
+            center.x + xPunct * (division * (1.0 / zoomLevel)), // Mapam x la coordonate
+            center.y - yPunct * (division * (1.0 / zoomLevel))  // Mapam y la coordonate
         );
-        linieCurbata.append(sf::Vertex(punct, sf::Color::Black));
+        linieCurbata.append(sf::Vertex(point, sf::Color::Black));
     }
     window.draw(linieCurbata);
-    for (int i = 1; i < functiaCurenta.valori.size() - 1; i++) // Sărim peste primul și ultimul punct
+    for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct
     {
-        double prevY = functiaCurenta.valori[i - 1].y;
-        double currY = functiaCurenta.valori[i].y;
-        double nextY = functiaCurenta.valori[i + 1].y;
+        double prevY = currentFunction.values[i - 1].y;
+        double currY = currentFunction.values[i].y;
+        double nextY = currentFunction.values[i + 1].y;
         if (prevY == NAN || currY == NAN || nextY == NAN)
             continue;
-        double diff = abs(functiaCurenta.valori[i - 1].x - functiaCurenta.valori[i].x);
+        double diff = abs(currentFunction.values[i - 1].x - currentFunction.values[i].x);
 
         // Convertim punctul curent la coordonate pe grafic
-        double xPunct = functiaCurenta.valori[i].x, yPunct = functiaCurenta.valori[i].y;
-        sf::Vector2f punct(
-            centru.x + xPunct * (diviziune * (1.0 / zoomLevel)), // Mapam x la coordonate
-            centru.y - yPunct * (diviziune * (1.0 / zoomLevel)));
+        double xPunct = currentFunction.values[i].x, yPunct = currentFunction.values[i].y;
+        sf::Vector2f point(
+            center.x + xPunct * (division * (1.0 / zoomLevel)), // Mapam x la coordonate
+            center.y - yPunct * (division * (1.0 / zoomLevel)));
         // Verificăm dacă este minim sau maxim
         if (currY < prevY && currY < nextY && diff < 1) // Minimul local
         {
-            sf::CircleShape punctMinim(5.0f);                 // Raza cercului
-            punctMinim.setFillColor(sf::Color::Green);        // Verde pentru minim
-            punctMinim.setPosition(punct.x - 5, punct.y - 5); // Centrăm cercul
-            window.draw(punctMinim);
+            sf::CircleShape pointMinim(5.0f);                 // Raza cercului
+            pointMinim.setFillColor(sf::Color::Green);        // Verde pentru minim
+            pointMinim.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
+            window.draw(pointMinim);
         }
         else if (currY > prevY && currY > nextY && diff < 1) // Maximul local
         {
-            sf::CircleShape punctMaxim(5.0f);                 // Raza cercului
-            punctMaxim.setFillColor(sf::Color::Red);          // Roșu pentru maxim
-            punctMaxim.setPosition(punct.x - 5, punct.y - 5); // Centrăm cercul
-            window.draw(punctMaxim);
+            sf::CircleShape pointMaxim(5.0f);                 // Raza cercului
+            pointMaxim.setFillColor(sf::Color::Red);          // Roșu pentru maxim
+            pointMaxim.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
+            window.draw(pointMaxim);
         }
     }
 }
-void grafic::miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &recalculPuncte)
+void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &pointsRecalculation)
 {
 
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
-        centru.y += diviziune;
+        center.y += division;
     }
     if (keyStates.at(sf::Keyboard::S) || keyStates.at(sf::Keyboard::Down))
     {
-        centru.y -= diviziune;
+        center.y -= division;
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
-        centru.x += diviziune;
-        recalculPuncte = true;
+        center.x += division;
+        pointsRecalculation = true;
     }
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
-        centru.x -= diviziune;
-        recalculPuncte = true;
+        center.x -= division;
+        pointsRecalculation = true;
     }
 }
-void grafic::setareLinii(sf::VertexArray &lines)
+void grafic::settingLines(sf::VertexArray &lines)
 {
-    lines[0].position = sf::Vector2f(0, centru.y);
+    lines[0].position = sf::Vector2f(0, center.y);
     lines[0].color = sf::Color::Black;
-    lines[1].position = sf::Vector2f(latimeEcran, centru.y);
+    lines[1].position = sf::Vector2f(latimeEcran, center.y);
     lines[1].color = sf::Color::Black;
-    lines[2].position = sf::Vector2f(centru.x, 0);
+    lines[2].position = sf::Vector2f(center.x, 0);
     lines[2].color = sf::Color::Black;
-    lines[3].position = sf::Vector2f(centru.x, inaltimeEcran);
+    lines[3].position = sf::Vector2f(center.x, inaltimeEcran);
     lines[3].color = sf::Color::Black;
 }
-void grafic::schimbareZoom(const double ConstantaDeZoom)
+void grafic::zoomChange(const double zoomConstant)
 {
-    if (ConstantaDeZoom > 1)
+    if (zoomConstant > 1)
     {
-        centru.x -= (centru.x - latimeEcran / 2) / 2;
-        centru.y -= (centru.y - inaltimeEcran / 2) / 2;
-        if (abs(centru.x - latimeEcran / 2) < 1)
-            centru.x = latimeEcran / 2;
-        if (abs(centru.y - inaltimeEcran / 2) < 1)
-            centru.y = inaltimeEcran / 2;
+        center.x -= (center.x - latimeEcran / 2) / 2;
+        center.y -= (center.y - inaltimeEcran / 2) / 2;
+        if (abs(center.x - latimeEcran / 2) < 1)
+            center.x = latimeEcran / 2;
+        if (abs(center.y - inaltimeEcran / 2) < 1)
+            center.y = inaltimeEcran / 2;
     }
     else
     {
-        centru.x += (centru.x - latimeEcran / 2);
-        centru.y += (centru.y - inaltimeEcran / 2);
+        center.x += (center.x - latimeEcran / 2);
+        center.y += (center.y - inaltimeEcran / 2);
     }
 
-    capatStanga *= ConstantaDeZoom;
-    capatDreapta *= ConstantaDeZoom;
-    zoomLevel *= ConstantaDeZoom;
+    LeftEnd *= zoomConstant;
+    RightEnd *= zoomConstant;
+    zoomLevel *= zoomConstant;
 
-    calculareDeltasiDivizune();
+    calculateDeltaDivision();
 }
-void setText(sf::Text &text, sf::Font &font, double value, double abscisa, double ordonata)
+void setText(sf::Text &text, sf::Font &font, double value, double abscissa, double ordinate)
 {
     text.setFont(font);
     std::string result = to_string(value);
@@ -488,5 +488,5 @@ void setText(sf::Text &text, sf::Font &font, double value, double abscisa, doubl
     text.setString(result);
     text.setCharacterSize(15);
     text.setFillColor(sf::Color::Black);
-    text.setPosition(abscisa, ordonata);
+    text.setPosition(abscissa, ordinate);
 }

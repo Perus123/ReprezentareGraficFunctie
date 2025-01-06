@@ -1,18 +1,18 @@
 #include "header.hpp"
 
-functie::functie()
+function::function()
 {
     input = "";
 }
 
-double executareFunctie(double variabila, const functie &a)
+double executeFunction(double variabila, const function &a)
 {
     stack<double> stiva;
     int i = 0;
-    for (int i = 0; i < a.sirPostfix.size(); i++)
+    for (int i = 0; i < a.postfixRow.size(); i++)
     {
         // incepem prin a separa variabilele si le punem pe stiva
-        string element = a.sirPostfix[i];
+        string element = a.postfixRow[i];
         if (element == "x")
             stiva.push(variabila);
         else if (isdigit(element[0]))
@@ -71,20 +71,20 @@ double executareFunctie(double variabila, const functie &a)
     return stiva.top();
 }
 
-void functie::calcularePuncte(double start, double end, double delta)
+void function::calculatePoints(double start, double end, double delta)
 {
-    valori.clear();
-    double valoare = start;
-    while (valoare <= end)
+    values.clear();
+    double value = start;
+    while (value <= end)
     {
-        double res = executareFunctie(valoare, *this);
-        valori.emplace_back(punct({valoare, res}));
-        valoare += delta;
+        double res = executeFunction(value, *this);
+        values.emplace_back(point({value, res}));
+        value += delta;
     }
-    cout << valori.size() << '\n';
+    cout << values.size() << '\n';
 }
 
-void functie::calculareOrdinePostfix()
+void function::postfixOrderCalculation()
 {
     int i = 0, lungime = input.size();
     std::string numar = "";            /// string auxiliar pentru adaugat elemente in stiva
@@ -116,16 +116,16 @@ void functie::calculareOrdinePostfix()
                 c = input[i];
             }
             i--;
-            sirPostfix.emplace_back(numar); // folosita pentru ca este mai rapida decat push_back
+            postfixRow.emplace_back(numar); // folosita pentru ca este mai rapida decat push_back
             numar = "";                     /// creeaza numar si il pune in sir
         }
         else if (isoperator(c))
         {
             while (!operatori.empty() &&
-                   (prioritateOperator(operatori.top()) > prioritateOperator(c) ||
-                    (prioritateOperator(operatori.top()) == prioritateOperator(c) && c != '^')))
+                   (operatorsPriority(operatori.top()) > operatorsPriority(c) ||
+                    (operatorsPriority(operatori.top()) == operatorsPriority(c) && c != '^')))
             { // verificam prioritatea operatorilor
-                sirPostfix.emplace_back(operatori.top());
+                postfixRow.emplace_back(operatori.top());
                 operatori.pop();
             }
             numar += c;
@@ -140,26 +140,26 @@ void functie::calculareOrdinePostfix()
         { // daca avem paranteza inchisa, dam pop la toti operatorii intalniti pana la '('
             while (!operatori.empty() && operatori.top() != "(")
             {
-                sirPostfix.emplace_back(operatori.top());
+                postfixRow.emplace_back(operatori.top());
                 operatori.pop();
             }
             if (!operatori.empty()) // elimina si paranteza '('
                 operatori.pop();
             if (!operatori.empty() && operatori.top()[0] >= 'a' && operatori.top()[0] <= 'z')
             { // daca aveai in fata o functie de tipul cos, ln etc.
-                sirPostfix.emplace_back(operatori.top());
+                postfixRow.emplace_back(operatori.top());
                 operatori.pop();
             } /// rezolva parantezele
         }
     }
     while (!operatori.empty())
     {
-        sirPostfix.emplace_back(operatori.top());
+        postfixRow.emplace_back(operatori.top());
         operatori.pop();
     }
 }
 
-void functie::prelucrareInput()
+void function::prelucrareInput()
 {
     return;
 }

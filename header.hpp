@@ -11,24 +11,24 @@
 using namespace std;
 double extern zoomLevel;
 bool isoperator(char c);
-int prioritateOperator(char c);
-int prioritateOperator(const string &c);
+int operatorsPriority(char c);
+int operatorsPriority(const string &c);
 void stackdump(vector<string> st);
-struct punct
+struct point
 {
    double x = 0, y = 0;
 };
-class functie
+class function
 {
 public:
    string input;
-   vector<string> sirPostfix;
+   vector<string> postfixRow;
    double delta;
-   vector<punct> valori;
-   functie();
-   friend double executareFunctie(double valoare, const functie &a);
-   void calcularePuncte(double start, double end, double delta);
-   void calculareOrdinePostfix();
+   vector<point> values;
+   function();
+   friend double executeFunction(double value, const function &a);
+   void calculatePoints(double start, double end, double delta);
+   void postfixOrderCalculation();
    void prelucrareInput();
 
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
@@ -37,25 +37,25 @@ public:
 class grafic
 {
 public:
-   punct centru;
-   double capatStanga, capatDreapta;
-   const int numarPuncte = 2000;
-   double delta, diviziune;
+   point  center;
+   double RightEnd, LeftEnd;
+   const int pointsNumber = 2000;
+   double delta, division;
    double latimeEcran, inaltimeEcran;
-   double capatSus, capatJos;
+   double upperBound, lowerBound;
    
    grafic(double screenWidth, double screenHeight);
-   void calculareDeltasiDivizune();
-   void initializareGrafic(vector<functie> &functii);
-   void deseneazaNumere(sf::RenderWindow &window);
-   void deseneazaLiniaFunctiei(sf::RenderWindow &window, const functie &functiaCurenta);
-   void miscareEcran(const unordered_map<sf::Keyboard::Key, bool> keyStates,bool& recalculPuncte);
-   void setareLinii(sf::VertexArray& lines);
-   void schimbareZoom(const double Constanta);
+   void calculateDeltaDivision();
+   void initialiseGraphic(vector<function> &functions);
+   void drawNumbers(sf::RenderWindow &window);
+   void drawFunctionLines(sf::RenderWindow &window, const function &currentFunction);
+   void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates,bool& pointsRecalculation);
+   void settingLines(sf::VertexArray& lines);
+   void zoomChange(const double constant);
 };
 
-bool estefunctie(const string &s);
+bool isFunction(const string &s);
 bool isoperand(char c);
 void curatareInput(string &s);
-void setText(sf::Text &text, sf::Font &font, double value, double abscisa, double ordonata);
+void setText(sf::Text &text, sf::Font &font, double value, double abscissa, double ordinate);
 #endif

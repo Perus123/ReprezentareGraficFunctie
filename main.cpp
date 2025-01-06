@@ -4,14 +4,14 @@ using namespace std;
 int main()
 {
 
-    functie a;
-    vector<functie> f;
+    function a;
+    vector<function> f;
     a.input = "x*(sin(1/x))";
-    a.calculareOrdinePostfix();
+    a.postfixOrderCalculation();
     grafic principal(1200,800);
     cout << principal.inaltimeEcran << " " << principal.latimeEcran;
     f.push_back(a);
-    principal.initializareGrafic(f);
+    principal.initialiseGraphic(f);
 
     return 0;
 }
