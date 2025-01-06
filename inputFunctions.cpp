@@ -41,37 +41,37 @@ bool isoperand(char c)
 }
 void curatareInput(string& s)
 {
-   string cuvant;
-   string expresie;
-   int inparanteza = 0;
-   string auxFaraSpatii="";
+   string word;
+   string expression;
+   int inBrackets = 0;
+   string noSpaceAux="";
    for(int i=0;i<s.size();i++)
       if(s[i]!=' ')
-         auxFaraSpatii+=s[i];
-   s=auxFaraSpatii;
+         noSpaceAux+=s[i];
+   s=noSpaceAux;
    for (int i = 0; i < s.size(); i++)
    {
       char c = s[i];
-      cuvant = "";
+      word = "";
       if (c >= 'a' && c <= 'z' && c != 'x')
       {
          bool ok=1;
-         while (i < s.size() && c >= 'a' && c <= 'z' && c != 'x' && cuvant.size()<3 && ok) // daca ar trebui sa fie numele unei functii
+         while (i < s.size() && c >= 'a' && c <= 'z' && c != 'x' && word.size()<3 && ok) // daca ar trebui sa fie numele unei functii
          {
-            cuvant += c;
+            word += c;
             
             i++;
             c = s[i];
-            if(cuvant=="ln")
+            if(word=="ln")
             ok=0;
          }
          i--;
 
-         if (isFunction(cuvant)) // daca avem numele unei functii, o adaugam si deschidem o paranteza;
+         if (isFunction(word)) // daca avem numele unei functii, o adaugam si deschidem o paranteza;
          {
-            expresie += cuvant;
-            expresie += '(';
-            inparanteza++;
+            expression += word;
+            expression += '(';
+            inBrackets++;
          }
          else
          {
@@ -83,19 +83,19 @@ void curatareInput(string& s)
 
       else if (isdigit(c)) // daca e numar
       {
-         cuvant += c;
+         word += c;
          c = s[i + 1];
          i++;
          while (isdigit(c)) // daca este numar format din mai multe cifre
          {
-            cuvant += c;
+            word += c;
             i++;
             c = s[i];
          }
          if (c == 'x') // daca dupa numar avem x, o sa traducem in nr*x
-            expresie += cuvant + "*" + 'x',i++;
+            expression += word + "*" + 'x',i++;
          else
-            expresie += cuvant;
+            expression += word;
             i--;
       }
       else if (c == 'x')
@@ -106,24 +106,24 @@ void curatareInput(string& s)
             c = s[i];
             while (isdigit(c)) // daca este numar
             {
-               cuvant += c;
+               word += c;
                i++;
                c = s[i];
             }
             i--;
-            expresie += (cuvant + '*');
+            expression += (word + '*');
          }
-         expresie += 'x';
-         expresie += ')';
-         inparanteza-- ;
+         expression += 'x';
+         expression += ')';
+         inBrackets-- ;
       }
       else if(isoperand(c))
-         expresie += c;
+         expression += c;
    }
-   while (inparanteza !=0)
-     { expresie += ')';
-       inparanteza--;
+   while (inBrackets !=0)
+     { expression += ')';
+       inBrackets--;
      }
 
-   s=expresie;
+   s=expression;
 }

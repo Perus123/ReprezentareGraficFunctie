@@ -41,7 +41,7 @@ public:
    double RightEnd, LeftEnd;
    const int pointsNumber = 2000;
    double delta, division;
-   double latimeEcran, inaltimeEcran;
+   double latimeEcran, inaltimeEcran;// avem deja screen width si screen height
    double upperBound, lowerBound;
    
    grafic(double screenWidth, double screenHeight);

@@ -375,7 +375,7 @@ void grafic::drawNumbers(sf::RenderWindow &window)
 }
 void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction)
 {
-    sf::VertexArray linieCurbata(sf::LineStrip);
+    sf::VertexArray curvedLine(sf::LineStrip);
     for (int i = 0; i < currentFunction.values.size(); i++)
     {
 
@@ -386,9 +386,9 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, const function &current
             center.x + xPunct * (division * (1.0 / zoomLevel)), // Mapam x la coordonate
             center.y - yPunct * (division * (1.0 / zoomLevel))  // Mapam y la coordonate
         );
-        linieCurbata.append(sf::Vertex(point, sf::Color::Black));
+        curvedLine.append(sf::Vertex(point, sf::Color::Black));
     }
-    window.draw(linieCurbata);
+    window.draw(curvedLine);
     for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct
     {
         double prevY = currentFunction.values[i - 1].y;
@@ -406,17 +406,17 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, const function &current
         // Verificăm dacă este minim sau maxim
         if (currY < prevY && currY < nextY && diff < 1) // Minimul local
         {
-            sf::CircleShape pointMinim(5.0f);                 // Raza cercului
-            pointMinim.setFillColor(sf::Color::Green);        // Verde pentru minim
-            pointMinim.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
-            window.draw(pointMinim);
+            sf::CircleShape minimumPoint(5.0f);                 // Raza cercului
+            minimumPoint.setFillColor(sf::Color::Green);        // Verde pentru minim
+            minimumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
+            window.draw(minimumPoint);
         }
         else if (currY > prevY && currY > nextY && diff < 1) // Maximul local
         {
-            sf::CircleShape pointMaxim(5.0f);                 // Raza cercului
-            pointMaxim.setFillColor(sf::Color::Red);          // Roșu pentru maxim
-            pointMaxim.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
-            window.draw(pointMaxim);
+            sf::CircleShape maximumPoint(5.0f);                 // Raza cercului
+            maximumPoint.setFillColor(sf::Color::Red);          // Roșu pentru maxim
+            maximumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
+            window.draw(maximumPoint);
         }
     }
 }

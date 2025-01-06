@@ -5,7 +5,7 @@ function::function()
     input = "";
 }
 
-double executeFunction(double variabila, const function &a)
+double executeFunction(double variable, const function &a)
 {
     stack<double> stiva;
     int i = 0;
@@ -14,7 +14,7 @@ double executeFunction(double variabila, const function &a)
         // incepem prin a separa variabilele si le punem pe stiva
         string element = a.postfixRow[i];
         if (element == "x")
-            stiva.push(variabila);
+            stiva.push(variable);
         else if (isdigit(element[0]))
             stiva.push(stof(element));
         else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
@@ -86,12 +86,12 @@ void function::calculatePoints(double start, double end, double delta)
 
 void function::postfixOrderCalculation()
 {
-    int i = 0, lungime = input.size();
-    std::string numar = "";            /// string auxiliar pentru adaugat elemente in stiva
-    std::stack<std::string> operatori; /// stiva de operatori
+    int i = 0, length = input.size();
+    std::string number = "";            /// string auxiliar pentru adaugat elemente in stiva
+    std::stack<std::string> operators; /// stiva de operatori
 
     // 2*3 + (8-3)/2
-    for (; i < lungime; i++)
+    for (; i < length; i++)
     {
         char c = input[i]; /// patru cazuri 1. Functii sin, cos, ln, tan / 2. numere sau variabila x, 3. operatori / 4. paranteze
                            /// functia de prelucrare input se asigura ca nu vor exista probleme
@@ -99,63 +99,63 @@ void function::postfixOrderCalculation()
         { // cazul 1, sin, cos , ln, tan, verificam daca este un cuvant care descrie o functie
             while (c >= 'a' && c <= 'z')
             {
-                numar += c;
+                number += c;
                 i++;
                 c = input[i];
             }
             i--;
-            operatori.push(numar); // adaugam la final "numele" functiei in stiva de operatori
-            numar = "";            /// creeaza functie si o pune in stack
+            operators.push(number); // adaugam la final "numele" functiei in stiva de operatori
+            number = "";            /// creeaza functie si o pune in stack
         }
         else if (isdigit(c) || c == 'x')
-        { // daca avem x sau un numar
+        { // daca avem x sau un number
             while (isdigit(c) || c == 'x')
             {
-                numar += c;
+                number += c;
                 i++;
                 c = input[i];
             }
             i--;
-            postfixRow.emplace_back(numar); // folosita pentru ca este mai rapida decat push_back
-            numar = "";                     /// creeaza numar si il pune in sir
+            postfixRow.emplace_back(number); // folosita pentru ca este mai rapida decat push_back
+            number = "";                     /// creeaza numar si il pune in sir
         }
         else if (isoperator(c))
         {
-            while (!operatori.empty() &&
-                   (operatorsPriority(operatori.top()) > operatorsPriority(c) ||
-                    (operatorsPriority(operatori.top()) == operatorsPriority(c) && c != '^')))
+            while (!operators.empty() &&
+                   (operatorsPriority(operators.top()) > operatorsPriority(c) ||
+                    (operatorsPriority(operators.top()) == operatorsPriority(c) && c != '^')))
             { // verificam prioritatea operatorilor
-                postfixRow.emplace_back(operatori.top());
-                operatori.pop();
+                postfixRow.emplace_back(operators.top());
+                operators.pop();
             }
-            numar += c;
-            operatori.push(numar);
-            numar = ""; /// creeaza operator si il pune in sir
+            number += c;
+            operators.push(number);
+            number = ""; /// creeaza operator si il pune in sir
         }
         else if (c == '(')
         {
-            operatori.push("(");
+            operators.push("(");
         }
         else if (c == ')')
         { // daca avem paranteza inchisa, dam pop la toti operatorii intalniti pana la '('
-            while (!operatori.empty() && operatori.top() != "(")
+            while (!operators.empty() && operators.top() != "(")
             {
-                postfixRow.emplace_back(operatori.top());
-                operatori.pop();
+                postfixRow.emplace_back(operators.top());
+                operators.pop();
             }
-            if (!operatori.empty()) // elimina si paranteza '('
-                operatori.pop();
-            if (!operatori.empty() && operatori.top()[0] >= 'a' && operatori.top()[0] <= 'z')
+            if (!operators.empty()) // elimina si paranteza '('
+                operators.pop();
+            if (!operators.empty() && operators.top()[0] >= 'a' && operators.top()[0] <= 'z')
             { // daca aveai in fata o functie de tipul cos, ln etc.
-                postfixRow.emplace_back(operatori.top());
-                operatori.pop();
+                postfixRow.emplace_back(operators.top());
+                operators.pop();
             } /// rezolva parantezele
         }
     }
-    while (!operatori.empty())
+    while (!operators.empty())
     {
-        postfixRow.emplace_back(operatori.top());
-        operatori.pop();
+        postfixRow.emplace_back(operators.top());
+        operators.pop();
     }
 }
 
