@@ -59,7 +59,7 @@ public:
    double delta, division;
    double screenWidth, screenHeight;
    double upperBound, lowerBound;
-   
+   sf::Font font;
    grafic(double screenWidthParameter, double screenHeightParameter);
    void calculateDeltaDivision();
    void initialiseGraphic(vector<function> &functions);

@@ -102,6 +102,11 @@ grafic::grafic(double screenWidthParameter, double screenHeightParameter) // con
     screenWidth = screenWidthParameter;
     screenHeight = screenHeightParameter;
     division = screenWidth / 20;
+    if (!font.loadFromFile("TIMES.TTF"))
+    {
+        std::cerr << "Error loading font!" << std::endl;
+        return;
+    }
     calculateDeltaDivision();
 }
 
@@ -118,12 +123,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
 {
     sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Function Plotter");
 
-    sf::Font font;
-    if (!font.loadFromFile("TIMES.TTF"))
-    {
-        std::cerr << "Error loading font!" << std::endl;
-        return;
-    }
+   
 
     initializeThemes();
     setupThemeButton(font);
@@ -521,6 +521,15 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
     else 
         draw=false;
     currentFunction.extremePoints=0;
+    TextofBox mouseHover(font);
+    mouseHover.box.setSize(sf::Vector2f(250,50));
+    if(isDarkTheme==true)
+    {
+        mouseHover.box.setFillColor(sf::Color::Black);
+        mouseHover.box.setOutlineColor(sf::Color::Green);
+        mouseHover.textBox.setFillColor(sf::Color::Green);
+    }
+
     for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct si determinam minimele si maximele locale
     {
         double prevY = currentFunction.values[i - 1].y;
@@ -544,6 +553,8 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
             minimumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
             if(draw==true){
                 window.draw(minimumPoint);
+                mouseHover.textBox.setString(to_string(xPunct)+" "+to_string(yPunct));
+                mouseHover.textBox.setPosition(sf::Vector2f(point.x-2.5, point.y-2.5));
             }
                 
             currentFunction.extremePoints++;
@@ -556,12 +567,16 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
             if(draw==true)
             {
                   window.draw(maximumPoint);
+                  mouseHover.textBox.setString(to_string(xPunct)+" "+to_string(yPunct));
+                  mouseHover.textBox.setPosition(sf::Vector2f(point.x-2.5, point.y-2.5));
             }
               
             currentFunction.extremePoints++;
         }
        
     }
+    window.draw(mouseHover.box);
+    window.draw(mouseHover.textBox);
 }
 // functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
 void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &pointsRecalculation)
