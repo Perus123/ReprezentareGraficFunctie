@@ -52,7 +52,7 @@ class grafic
 {
 public:
    point center;
-   double RightEnd, LeftEnd;
+   double rightEnd, leftEnd;
    const int pointsNumber = 2000;
    double delta, division;
    double screenWidth, screenHeight;

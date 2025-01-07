@@ -31,15 +31,15 @@ public:
 };
 void grafic::calculateDeltaDivision()
 {
-    delta = (RightEnd - LeftEnd) / pointsNumber;
+    delta = (rightEnd - leftEnd) / pointsNumber;
 }
 
 grafic::grafic(double screenWidthParameter, double screenHeightParameter)//constructorul clasei grafic
 {
     center.x = screenWidthParameter / 2;
     center.y = screenHeightParameter / 2;
-    LeftEnd = -10;
-    RightEnd = 10; /// coordonate stanga si dreapta
+    leftEnd = -10;
+    rightEnd = 10; /// coordonate stanga si dreapta
     screenWidth = screenWidthParameter;
     screenHeight = screenHeightParameter;
     division = screenWidth / 20;
@@ -102,8 +102,8 @@ void grafic::initialiseGraphic(vector<function> &functions)
     errorText.setFillColor(sf::Color::Red);
     errorText.setPosition(10, 60);
 
-    sf::Vector2f coordonateAfisareFunctie = {10.0, 55.0}; /// 10 spatiu + 40 input + 5 bordura
-    vector<TextofBox> borderFunctions;// chenareFunctii
+    sf::Vector2f coordonatesandFunctionDisplay = {10.0, 55.0}; /// 10 spatiu + 40 input + 5 bordura , locul de unde incepe afisarea functiei
+    vector<TextofBox> borderFunctions;// chenareFunctii, vector care stocheaza elemente de tipul TextofBox (asta inseamna gen, chenare and all ??)
 
     sf::VertexArray lines(sf::Lines, 4);
     settingLines(lines);
@@ -159,7 +159,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             newFunc.input = currentInput;
                             /// curatareInput(newFunc.input);
                             newFunc.postfixOrderCalculation();
-                            newFunc.calculatePoints(LeftEnd, RightEnd, delta);
+                            newFunc.calculatePoints(leftEnd, rightEnd, delta);
                             functions.push_back(newFunc);
                             newChenar.textBox.setString(newFunc.input);
                             borderFunctions.push_back(newChenar);
@@ -195,7 +195,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         newFunc.input = currentInput;
                         /// curatareInput(newFunc.input);
                         newFunc.postfixOrderCalculation();
-                        newFunc.calculatePoints(LeftEnd, RightEnd, delta);
+                        newFunc.calculatePoints(leftEnd, rightEnd, delta);
                         functions.push_back(newFunc);
                         newChenar.textBox.setString(newFunc.input);
                         borderFunctions.push_back(newChenar);
@@ -248,7 +248,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
         }
 
 
-        // Update hover effects
+        // updatam efectul de hover
         if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
         {
             enterButton.setFillColor(sf::Color(0, 180, 0)); // Lighter green on hover
@@ -260,7 +260,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
 
         // Desenare
 
-        // Draw coordinate system
+        // desenam coorodnatele sistemului
         window.clear(sf::Color::White);
         window.draw(lines);
         drawNumbers(window);
@@ -268,30 +268,30 @@ void grafic::initialiseGraphic(vector<function> &functions)
         {
             for (int i = 0; i < functions.size(); i++)
             {
-                functions[i].calculatePoints(LeftEnd, RightEnd, delta);
+                functions[i].calculatePoints(leftEnd, rightEnd, delta);
             }
             needsRecalculation = false;
         }
 
-        // Draw function only if we have a valid one
+        // vom desena o functie doar daca avem una valida
         for (int i = 0; i < functions.size(); i++)
         {
             drawFunctionLines(window, functions[i]);
         }
 
-        // Draw UI elements
+        // Desenam elementele de UI
         window.draw(inputBox);
         window.draw(inputText);
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        cout << LeftEnd << " " << RightEnd << '\n';
-        for (int i = 0; i < borderFunctions.size(); i++)
+        cout << leftEnd << " " << rightEnd << '\n';// afisam in consola capetele stanga si dreapta
+        for (int i = 0; i < borderFunctions.size(); i++)// aici desenam propriu zis toate elementele de tip, butoane , setand mai intai de unde le punem
         {
-            borderFunctions[i].box.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
-            borderFunctions[i].textBox.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 5, coordonateAfisareFunctie.y + i * 40 + 5));
-            borderFunctions[i].deleteButton.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 410, coordonateAfisareFunctie.y + i * 40));
-            borderFunctions[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 415, coordonateAfisareFunctie.y + i * 40 + 5));
+            borderFunctions[i].box.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x, coordonatesandFunctionDisplay.y + i * 40));
+            borderFunctions[i].textBox.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 5, coordonatesandFunctionDisplay.y + i * 40 + 5));//+5 pentru ca este in interiorul casetei
+            borderFunctions[i].deleteButton.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 410, coordonatesandFunctionDisplay.y + i * 40));
+            borderFunctions[i].textButon.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 415, coordonatesandFunctionDisplay.y + i * 40 + 5));// +5 pentru ca este in interiorul casetei
             window.draw(borderFunctions[i].deleteButton);
             window.draw(borderFunctions[i].box);
             window.draw(borderFunctions[i].textBox);
@@ -301,16 +301,15 @@ void grafic::initialiseGraphic(vector<function> &functions)
         window.display();
     }
 }
+// desenam numerele de pe grafic
 void grafic::drawNumbers(sf::RenderWindow &window)
 {
-
     sf::Font fontTimesNewRoman;
-    if (!fontTimesNewRoman.loadFromFile("TIMES.TTF"))
+    if (!fontTimesNewRoman.loadFromFile("TIMES.TTF"))// afisam eroare daca nu se poate incarca fontul
     {
         cerr << "Eroare: Fontul nu a putut fi incarcat\n";
         return;
     }
-
     double abscissa = center.x, ordinate = center.y;
     double index = 0;
     double step = zoomLevel;
@@ -355,7 +354,7 @@ void grafic::drawNumbers(sf::RenderWindow &window)
         abscissa -= division;
         index -= step;
     }
-    LeftEnd = index;
+    leftEnd = index;
     abscissa = center.x + division;
     index = step;
     while (abscissa < screenWidth)
@@ -370,25 +369,26 @@ void grafic::drawNumbers(sf::RenderWindow &window)
         abscissa += division;
         index += step;
     }
-    RightEnd = index;
+    rightEnd = index;
 }
-void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction)
+
+void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction)// unim punctele din grafic pentru functia curenta
 {
     sf::VertexArray curvedLine(sf::LineStrip);
-    for (int i = 0; i < currentFunction.values.size(); i++)
+    for (int i = 0; i < currentFunction.values.size(); i++)//parcurgerea punctelor functiei
     {
-
         double xPunct = currentFunction.values[i].x, yPunct = currentFunction.values[i].y;
-        if (yPunct == NAN)
+        if (yPunct == NAN)//daca valoarea lui y nu este numar, acesta este ignorat
             continue;
         sf::Vector2f point(
-            center.x + xPunct * (division * (1.0 / zoomLevel)), // Mapam x la coordonate
+            center.x + xPunct * (division * (1.0 / zoomLevel)), // Mapam x la coordonate dupa formula
             center.y - yPunct * (division * (1.0 / zoomLevel))  // Mapam y la coordonate
         );
-        curvedLine.append(sf::Vertex(point, sf::Color::Black));
+        curvedLine.append(sf::Vertex(point, sf::Color::Black));//adaugam punctul
     }
-    window.draw(curvedLine);
-    for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct
+    window.draw(curvedLine);//aici desenam linia care uneste punctele de pe ecran
+
+    for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct si determinam minimele si maximele locale
     {
         double prevY = currentFunction.values[i - 1].y;
         double currY = currentFunction.values[i].y;
@@ -419,9 +419,9 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, const function &current
         }
     }
 }
+//functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
 void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &pointsRecalculation)
 {
-
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
         center.y += division;
@@ -440,8 +440,9 @@ void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStat
         center.x -= division;
         pointsRecalculation = true;
     }
+    //trebuie recalculate punctele doar daca ne miscam stanga sau dreapta deoarece modificam domeniul;
 }
-void grafic::settingLines(sf::VertexArray &lines)
+void grafic::settingLines(sf::VertexArray &lines)// setam pentru cele doua axe, coordonatele capetelor si culoarea
 {
     lines[0].position = sf::Vector2f(0, center.y);
     lines[0].color = sf::Color::Black;
@@ -452,6 +453,7 @@ void grafic::settingLines(sf::VertexArray &lines)
     lines[3].position = sf::Vector2f(center.x, screenHeight);
     lines[3].color = sf::Color::Black;
 }
+
 void grafic::zoomChange(const double zoomConstant)
 {
     if (zoomConstant > 1)
@@ -469,17 +471,19 @@ void grafic::zoomChange(const double zoomConstant)
         center.y += (center.y - screenHeight / 2);
     }
 
-    LeftEnd *= zoomConstant;
-    RightEnd *= zoomConstant;
+    leftEnd *= zoomConstant;
+    rightEnd *= zoomConstant;
     zoomLevel *= zoomConstant;
 
     calculateDeltaDivision();
 }
+
+// setam textul, fontul pentru un obiect, cat si coordonatele unde va fi desenat
 void setText(sf::Text &text, sf::Font &font, double value, double abscissa, double ordinate)
 {
     text.setFont(font);
     std::string result = to_string(value);
-    result.erase(result.find_last_not_of('0') + 1);
+    result.erase(result.find_last_not_of('0') + 1);// inlaturam parte zecimala inutila
     if (!result.empty() && result.back() == '.')
     {
         result.pop_back();
