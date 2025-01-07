@@ -520,7 +520,7 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
         draw = false;
     currentFunction.extremePoints = 0;
     TextofBox mouseHover(font);
-    mouseHover.box.setSize(sf::Vector2f(250, 50));
+    mouseHover.box.setSize(sf::Vector2f(150, 30));
     bool drawMouse=false;
     if (isDarkTheme == true)
     {
@@ -559,7 +559,7 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
                     drawMouse=true;
                     mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
                     mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5, point.y + 5));
-                    mouseHover.box.setPosition(sf::Vector2f(point.x, point.y));
+                    mouseHover.box.setPosition(sf::Vector2f(point.x+1, point.y+1));
                 }
             }
 
@@ -579,7 +579,7 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
                     drawMouse=true;
                     mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
                     mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5 , point.y + 5 ));
-                    mouseHover.box.setPosition(sf::Vector2f(point.x, point.y));
+                    mouseHover.box.setPosition(sf::Vector2f(point.x+1, point.y+1));
                 }
             }
 
