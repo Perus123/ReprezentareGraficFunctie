@@ -1,20 +1,79 @@
 #include "header.hpp"
 
+void grafic::initializeThemes() // initializam temele
+{
+    // Light theme (default)
+    lightTheme = {
+        sf::Color::White,     // backgroundColor
+        sf::Color::Black,     // textColor
+        sf::Color::Black,     // axisColor
+        sf::Color::Black,     // functionColor
+        sf::Color::White,     // inputBoxFillColor
+        sf::Color::Black,     // inputBoxOutlineColor
+        sf::Color::Green,     // buttonFillColor
+        sf::Color(0, 180, 0), // buttonHoverColor
+        sf::Color::Green,     // minimumPointColor
+        sf::Color::Red        // maximumPointColor
+    };
+
+    // Dark theme
+    darkTheme = {
+        sf::Color(30, 30, 30),  // backgroundColor
+        sf::Color::White,       // textColor
+        sf::Color::White,       // axisColor
+        sf::Color(0, 255, 0),   // functionColor
+        sf::Color(50, 50, 50),  // inputBoxFillColor
+        sf::Color::White,       // inputBoxOutlineColor
+        sf::Color(0, 100, 0),   // buttonFillColor
+        sf::Color(0, 130, 0),   // buttonHoverColor
+        sf::Color(0, 255, 100), // minimumPointColor
+        sf::Color(255, 50, 50)  // maximumPointColor
+    };
+
+    isDarkTheme = false; // Start with light theme
+}
+
+void grafic::setupThemeButton(sf::Font &font)
+{
+    themeButton.setSize(sf::Vector2f(100, 40));
+    themeButton.setPosition(screenWidth - 110, 10);
+    themeButton.setFillColor(getCurrentTheme().buttonFillColor);
+    themeButton.setOutlineThickness(2);
+    themeButton.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
+
+    themeButtonText.setFont(font);
+    themeButtonText.setString("Theme");
+    themeButtonText.setCharacterSize(15);
+    themeButtonText.setFillColor(getCurrentTheme().textColor);
+    themeButtonText.setPosition(screenWidth - 105, 20);
+}
+
+void grafic::toggleTheme()
+{
+    isDarkTheme = !isDarkTheme;
+    Theme &currentTheme = getCurrentTheme();
+
+    // Update theme button colors
+    themeButton.setFillColor(currentTheme.buttonFillColor);
+    themeButton.setOutlineColor(currentTheme.inputBoxOutlineColor);
+    themeButtonText.setFillColor(currentTheme.textColor);
+}
+
 double zoomLevel = 1;
 class TextofBox
 {
 public:
-    sf::RectangleShape box, deleteButton;// box reprezinta fundalul
-    sf::Text textBox, textButon;// textBox este textul functiei afisate iar textButton textul butonului
+    sf::RectangleShape box, deleteButton; // box reprezinta fundalul
+    sf::Text textBox, textButon;          // textBox este textul functiei afisate iar textButton textul butonului
 
     TextofBox(sf::Font &f)
     {
-        //setam fontul default pentru program
+        // setam fontul default pentru program
         box.setSize(sf::Vector2f(400, 40));
         box.setFillColor(sf::Color::White);
         box.setOutlineThickness(2);
         box.setOutlineColor(sf::Color::Black);
-        //setam carcateristicile la butonul de delete
+        // setam carcateristicile la butonul de delete
         deleteButton.setSize(sf::Vector2f(100, 40));
         deleteButton.setFillColor(sf::Color::Green);
         deleteButton.setOutlineThickness(2);
@@ -34,7 +93,7 @@ void grafic::calculateDeltaDivision()
     delta = (rightEnd - leftEnd) / pointsNumber;
 }
 
-grafic::grafic(double screenWidthParameter, double screenHeightParameter)//constructorul clasei grafic
+grafic::grafic(double screenWidthParameter, double screenHeightParameter) // constructorul clasei grafic
 {
     center.x = screenWidthParameter / 2;
     center.y = screenHeightParameter / 2;
@@ -46,7 +105,7 @@ grafic::grafic(double screenWidthParameter, double screenHeightParameter)//const
     calculateDeltaDivision();
 }
 
-bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)//functia pentru a vedea daca coordonatele mouseului se afla in interiorul unui buton
+bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window) // functia pentru a vedea daca coordonatele mouseului se afla in interiorul unui buton
 {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f buttonPos = button.getPosition();
@@ -66,26 +125,29 @@ void grafic::initialiseGraphic(vector<function> &functions)
         return;
     }
 
-    //setup-ul pentru caseta de input
+    initializeThemes();
+    setupThemeButton(font);
+
+    // setup-ul pentru caseta de input
     sf::RectangleShape inputBox(sf::Vector2f(400, 40));
     inputBox.setPosition(10, 10);
-    inputBox.setFillColor(sf::Color::White);
+    inputBox.setFillColor(getCurrentTheme().inputBoxFillColor);
     inputBox.setOutlineThickness(2);
-    inputBox.setOutlineColor(sf::Color::Black);
+    inputBox.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
 
     // setup-ul pentru textul din caseta de input
     sf::Text inputText;
     inputText.setFont(font);
     inputText.setCharacterSize(20);
-    inputText.setFillColor(sf::Color::Black);
+    inputText.setFillColor(getCurrentTheme().textColor);
     inputText.setPosition(15, 15);
 
     // setup pentru butonul de enter
     sf::RectangleShape enterButton(sf::Vector2f(100, 40));
     enterButton.setPosition(420, 10);
-    enterButton.setFillColor(sf::Color::Green);
+    enterButton.setFillColor(getCurrentTheme().buttonFillColor);
     enterButton.setOutlineThickness(2);
-    enterButton.setOutlineColor(sf::Color::Black);
+    enterButton.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
 
     // setup pentru textul din caseta de enter
     sf::Text enterButtonText;
@@ -103,7 +165,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     errorText.setPosition(10, 60);
 
     sf::Vector2f coordonatesandFunctionDisplay = {10.0, 55.0}; /// 10 spatiu + 40 input + 5 bordura , locul de unde incepe afisarea functiei
-    vector<TextofBox> borderFunctions;// chenareFunctii, vector care stocheaza elemente de tipul TextofBox (asta inseamna gen, chenare and all ??)
+    vector<TextofBox> borderFunctions;                         // chenareFunctii, vector care stocheaza elemente de tipul TextofBox (asta inseamna gen, chenare and all ??)
 
     sf::VertexArray lines(sf::Lines, 4);
     settingLines(lines);
@@ -112,7 +174,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     bool isInputActive = false;
     bool needsRecalculation = false;
     functions.clear();
-    //map pentru initializare de setup, inputurile sunt marcate ca si false 
+    // map pentru initializare de setup, inputurile sunt marcate ca si false
     unordered_map<sf::Keyboard::Key, bool> keyStates = {
         {sf::Keyboard::W, false}, {sf::Keyboard::A, false}, {sf::Keyboard::S, false}, {sf::Keyboard::D, false}, {sf::Keyboard::Left, false}, {sf::Keyboard::Right, false}, {sf::Keyboard::Up, false}, {sf::Keyboard::Down, false}};
 
@@ -128,31 +190,53 @@ void grafic::initialiseGraphic(vector<function> &functions)
             {
                 window.close();
             }
-
-            //handling pt click-urile de la mouse
+            // handling pt click-urile de la mouse
             if (event.type == sf::Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    for(vector<TextofBox>::iterator i = borderFunctions.begin(); i!=borderFunctions.end();)//nu-s sigur ca am inteles aici complet
-                    {   
-                        TextofBox auxButton=*i;
-                        if(auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)){
+                    if (themeButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) // daca mouse-ul este peste butonul de schimbare a temelor
+                    {
+                        toggleTheme();
+
+                        // Update all UI elements with new theme colors
+                        inputBox.setFillColor(getCurrentTheme().inputBoxFillColor);
+                        inputBox.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
+                        inputText.setFillColor(getCurrentTheme().textColor);
+                        enterButton.setFillColor(getCurrentTheme().buttonFillColor);
+                        enterButtonText.setFillColor(getCurrentTheme().textColor);
+                        errorText.setFillColor(sf::Color::Red); // Keep error text red in both themes
+
+                        // Update existing function boxes
+                        for (auto &box : borderFunctions)
+                        {
+                            box.box.setFillColor(getCurrentTheme().inputBoxFillColor);
+                            box.box.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
+                            box.textBox.setFillColor(getCurrentTheme().textColor);
+                            box.deleteButton.setFillColor(getCurrentTheme().buttonFillColor);
+                            box.textButon.setFillColor(getCurrentTheme().textColor);
+                        }
+                    }
+                    for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
+                    {
+                        TextofBox auxButton = *i;
+                        if (auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                        {
                             borderFunctions.erase(i);
-                            functions.erase(functions.begin()+(i-borderFunctions.begin()));
+                            functions.erase(functions.begin() + (i - borderFunctions.begin()));
                         }
                         else
                             i++;
                     }
-                    if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))//daca introducem text, facem caseta albastra
+                    if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) // daca introducem text, facem caseta albastra
                     {
                         isInputActive = true;
                         inputBox.setOutlineColor(sf::Color::Blue);
                     }
                     // Daca apasam pe butonul enter
                     else if (enterButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
-                    {//trebuie adaugat daca chestia aia nu e functie ig
-                        if (!currentInput.empty())//daca avem o functie scrisa inauntru
+                    {                              // trebuie adaugat daca chestia aia nu e functie ig
+                        if (!currentInput.empty()) // daca avem o functie scrisa inauntru
                         {
                             function newFunc;
                             TextofBox newChenar(font);
@@ -180,14 +264,14 @@ void grafic::initialiseGraphic(vector<function> &functions)
             if (isInputActive && event.type == sf::Event::TextEntered)
             {
                 if (event.text.unicode == '\b')
-                { //daca apasam pe backspace, stergem un element
+                { // daca apasam pe backspace, stergem un element
                     if (!currentInput.empty())
                     {
                         currentInput.pop_back();
                     }
                 }
                 else if (event.text.unicode == 13)
-                { //daca apas pe enter
+                { // daca apas pe enter
                     if (!currentInput.empty())
                     {
                         function newFunc;
@@ -247,21 +331,25 @@ void grafic::initialiseGraphic(vector<function> &functions)
             settingLines(lines);
         }
 
-
         // updatam efectul de hover
-        if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
+        if (isMouseOverButton(themeButton, window))
         {
-            enterButton.setFillColor(sf::Color(0, 180, 0)); // Lighter green on hover
+            themeButton.setFillColor(getCurrentTheme().buttonHoverColor);
         }
         else
         {
-            enterButton.setFillColor(sf::Color::Green);
+            themeButton.setFillColor(getCurrentTheme().buttonFillColor);
         }
 
         // Desenare
+        window.clear(getCurrentTheme().backgroundColor);
 
-        // desenam coorodnatele sistemului
-        window.clear(sf::Color::White);
+        // Update the color of coordinate system lines
+        lines[0].color = getCurrentTheme().axisColor;
+        lines[1].color = getCurrentTheme().axisColor;
+        lines[2].color = getCurrentTheme().axisColor;
+        lines[3].color = getCurrentTheme().axisColor;
+
         window.draw(lines);
         drawNumbers(window);
         if (needsRecalculation == true)
@@ -273,31 +361,33 @@ void grafic::initialiseGraphic(vector<function> &functions)
             needsRecalculation = false;
         }
 
-        // vom desena o functie doar daca avem una valida
-        for (int i = 0; i < functions.size(); i++)
+        // Draw functions with theme colors
+        for (const auto &func : functions)
         {
-            drawFunctionLines(window, functions[i]);
+            drawFunctionLines(window, func);
         }
 
-        // Desenam elementele de UI
+        // Draw UI elements
         window.draw(inputBox);
         window.draw(inputText);
         window.draw(enterButton);
         window.draw(enterButtonText);
         window.draw(errorText);
-        cout << leftEnd << " " << rightEnd << '\n';// afisam in consola capetele stanga si dreapta
-        for (int i = 0; i < borderFunctions.size(); i++)// aici desenam propriu zis toate elementele de tip, butoane , setand mai intai de unde le punem
+        window.draw(themeButton);
+        window.draw(themeButtonText);
+
+        cout << leftEnd << " " << rightEnd << '\n';      // afisam in consola capetele stanga si dreapta
+        for (int i = 0; i < borderFunctions.size(); i++) // aici desenam propriu zis toate elementele de tip, butoane , setand mai intai de unde le punem
         {
             borderFunctions[i].box.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x, coordonatesandFunctionDisplay.y + i * 40));
-            borderFunctions[i].textBox.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 5, coordonatesandFunctionDisplay.y + i * 40 + 5));//+5 pentru ca este in interiorul casetei
+            borderFunctions[i].textBox.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 5, coordonatesandFunctionDisplay.y + i * 40 + 5)); //+5 pentru ca este in interiorul casetei
             borderFunctions[i].deleteButton.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 410, coordonatesandFunctionDisplay.y + i * 40));
-            borderFunctions[i].textButon.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 415, coordonatesandFunctionDisplay.y + i * 40 + 5));// +5 pentru ca este in interiorul casetei
+            borderFunctions[i].textButon.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 415, coordonatesandFunctionDisplay.y + i * 40 + 5)); // +5 pentru ca este in interiorul casetei
             window.draw(borderFunctions[i].deleteButton);
             window.draw(borderFunctions[i].box);
             window.draw(borderFunctions[i].textBox);
             window.draw(borderFunctions[i].textButon);
         }
-
         window.display();
     }
 }
@@ -305,7 +395,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
 void grafic::drawNumbers(sf::RenderWindow &window)
 {
     sf::Font fontTimesNewRoman;
-    if (!fontTimesNewRoman.loadFromFile("TIMES.TTF"))// afisam eroare daca nu se poate incarca fontul
+    if (!fontTimesNewRoman.loadFromFile("TIMES.TTF"))
     {
         cerr << "Eroare: Fontul nu a putut fi incarcat\n";
         return;
@@ -313,15 +403,21 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     double abscissa = center.x, ordinate = center.y;
     double index = 0;
     double step = zoomLevel;
+    
+    // Draw small lines for axis markers
     while (ordinate > 0)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
+        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), sf::Color::Black);
-        sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), sf::Color::Black);
+        
+        // Draw axis markers using theme colors
+        sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), getCurrentTheme().axisColor);
+        sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
+        
         ordinate -= division;
         index += step;
     }
@@ -332,25 +428,35 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
+        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), sf::Color::Black);
-        sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), sf::Color::Black);
+        
+        // Draw axis markers using theme colors
+        sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), getCurrentTheme().axisColor);
+        sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
+        
         ordinate += division;
         index -= step;
     }
-    abscissa = center.x - division, ordinate = center.y;
+
+    abscissa = center.x - division;
+    ordinate = center.y;
     index = -step;
     while (abscissa > 0)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
+        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), sf::Color::Black);
-        sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), sf::Color::Black);
+        
+        // Draw axis markers using theme colors
+        sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), getCurrentTheme().axisColor);
+        sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
+        
         abscissa -= division;
         index -= step;
     }
@@ -361,32 +467,52 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
+        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), sf::Color::Black);
-        sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), sf::Color::Black);
+        
+        // Draw axis markers using theme colors
+        sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), getCurrentTheme().axisColor);
+        sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
+        
         abscissa += division;
         index += step;
     }
     rightEnd = index;
 }
 
-void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction)// unim punctele din grafic pentru functia curenta
+// Also modify the setText function to use theme colors
+void setText(sf::Text &text, sf::Font &font, double value, double abscissa, double ordinate)
+{
+    text.setFont(font);
+    std::string result = to_string(value);
+    result.erase(result.find_last_not_of('0') + 1);
+    if (!result.empty() && result.back() == '.')
+    {
+        result.pop_back();
+    }
+    text.setString(result);
+    text.setCharacterSize(15);
+    // Note: The color is now set in drawNumbers function using the current theme
+    text.setPosition(abscissa, ordinate);
+}
+
+void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction) // unim punctele din grafic pentru functia curenta
 {
     sf::VertexArray curvedLine(sf::LineStrip);
-    for (int i = 0; i < currentFunction.values.size(); i++)//parcurgerea punctelor functiei
+    for (const auto &value : currentFunction.values) // parcurgerea punctelor functiei
     {
-        double xPunct = currentFunction.values[i].x, yPunct = currentFunction.values[i].y;
-        if (yPunct == NAN)//daca valoarea lui y nu este numar, acesta este ignorat
+        if (std::isnan(value.y)) // daca valoarea lui y nu este numar, acesta este ignorat
             continue;
+
         sf::Vector2f point(
-            center.x + xPunct * (division * (1.0 / zoomLevel)), // Mapam x la coordonate dupa formula
-            center.y - yPunct * (division * (1.0 / zoomLevel))  // Mapam y la coordonate
+            center.x + value.x * (division * (1.0 / zoomLevel)), // Mapam x la coordonate dupa formula
+            center.y - value.y * (division * (1.0 / zoomLevel))  // Mapam y la coordonate
         );
-        curvedLine.append(sf::Vertex(point, sf::Color::Black));//adaugam punctul
+        curvedLine.append(sf::Vertex(point, getCurrentTheme().functionColor)); // adaugam punctul
     }
-    window.draw(curvedLine);//aici desenam linia care uneste punctele de pe ecran
+    window.draw(curvedLine); // aici desenam linia care uneste punctele de pe ecran
 
     for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct si determinam minimele si maximele locale
     {
@@ -406,20 +532,20 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, const function &current
         if (currY < prevY && currY < nextY && diff < 1) // Minimul local
         {
             sf::CircleShape minimumPoint(5.0f);                 // Raza cercului
-            minimumPoint.setFillColor(sf::Color::Green);        // Verde pentru minim
+            minimumPoint.setFillColor(getCurrentTheme().minimumPointColor);// Verde pentru minim
             minimumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
             window.draw(minimumPoint);
         }
         else if (currY > prevY && currY > nextY && diff < 1) // Maximul local
         {
             sf::CircleShape maximumPoint(5.0f);                 // Raza cercului
-            maximumPoint.setFillColor(sf::Color::Red);          // Roșu pentru maxim
+            maximumPoint.setFillColor(getCurrentTheme().maximumPointColor);// Roșu pentru maxim
             maximumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
             window.draw(maximumPoint);
         }
     }
 }
-//functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
+// functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
 void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &pointsRecalculation)
 {
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
@@ -440,9 +566,9 @@ void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStat
         center.x -= division;
         pointsRecalculation = true;
     }
-    //trebuie recalculate punctele doar daca ne miscam stanga sau dreapta deoarece modificam domeniul;
+    // trebuie recalculate punctele doar daca ne miscam stanga sau dreapta deoarece modificam domeniul;
 }
-void grafic::settingLines(sf::VertexArray &lines)// setam pentru cele doua axe, coordonatele capetelor si culoarea
+void grafic::settingLines(sf::VertexArray &lines) // setam pentru cele doua axe, coordonatele capetelor si culoarea
 {
     lines[0].position = sf::Vector2f(0, center.y);
     lines[0].color = sf::Color::Black;
@@ -476,20 +602,4 @@ void grafic::zoomChange(const double zoomConstant)
     zoomLevel *= zoomConstant;
 
     calculateDeltaDivision();
-}
-
-// setam textul, fontul pentru un obiect, cat si coordonatele unde va fi desenat
-void setText(sf::Text &text, sf::Font &font, double value, double abscissa, double ordinate)
-{
-    text.setFont(font);
-    std::string result = to_string(value);
-    result.erase(result.find_last_not_of('0') + 1);// inlaturam parte zecimala inutila
-    if (!result.empty() && result.back() == '.')
-    {
-        result.pop_back();
-    }
-    text.setString(result);
-    text.setCharacterSize(15);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(abscissa, ordinate);
 }
