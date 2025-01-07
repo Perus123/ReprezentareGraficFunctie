@@ -3,6 +3,7 @@
 function::function()
 {
     input = "";
+    extremePoints=0;
 }
 
 double executeFunction(double variable, const function &a)

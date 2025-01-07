@@ -183,6 +183,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     while (window.isOpen())
     {
 
+        sf::Vector2i mouseCoordinates=sf::Mouse::getPosition();
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -362,9 +363,9 @@ void grafic::initialiseGraphic(vector<function> &functions)
         }
 
         // Draw functions with theme colors
-        for (const auto &func : functions)
+        for (auto &func : functions)
         {
-            drawFunctionLines(window, func);
+            drawFunctionLines(window, func, mouseCoordinates);
         }
 
         // Draw UI elements
@@ -498,8 +499,9 @@ void setText(sf::Text &text, sf::Font &font, double value, double abscissa, doub
     text.setPosition(abscissa, ordinate);
 }
 
-void grafic::drawFunctionLines(sf::RenderWindow &window, const function &currentFunction) // unim punctele din grafic pentru functia curenta
-{
+void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFunction, sf::Vector2i mouseCoordinates) // unim punctele din grafic pentru functia curenta
+{ 
+   
     sf::VertexArray curvedLine(sf::LineStrip);
     for (const auto &value : currentFunction.values) // parcurgerea punctelor functiei
     {
@@ -513,14 +515,20 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, const function &current
         curvedLine.append(sf::Vertex(point, getCurrentTheme().functionColor)); // adaugam punctul
     }
     window.draw(curvedLine); // aici desenam linia care uneste punctele de pe ecran
-
+    bool draw=false;
+    if(currentFunction.extremePoints<150)
+        draw=true;
+    else 
+        draw=false;
+    currentFunction.extremePoints=0;
     for (int i = 1; i < currentFunction.values.size() - 1; i++) // Sărim peste primul și ultimul punct si determinam minimele si maximele locale
     {
         double prevY = currentFunction.values[i - 1].y;
         double currY = currentFunction.values[i].y;
         double nextY = currentFunction.values[i + 1].y;
-        if (prevY == NAN || currY == NAN || nextY == NAN)
-            continue;
+        
+        //if (prevY == NAN || currY == NAN || nextY == NAN)
+          //  continue;
         double diff = abs(currentFunction.values[i - 1].x - currentFunction.values[i].x);
 
         // Convertim punctul curent la coordonate pe grafic
@@ -534,15 +542,25 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, const function &current
             sf::CircleShape minimumPoint(5.0f);                 // Raza cercului
             minimumPoint.setFillColor(getCurrentTheme().minimumPointColor);// Verde pentru minim
             minimumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
-            window.draw(minimumPoint);
+            if(draw==true){
+                window.draw(minimumPoint);
+            }
+                
+            currentFunction.extremePoints++;
         }
         else if (currY > prevY && currY > nextY && diff < 1) // Maximul local
         {
             sf::CircleShape maximumPoint(5.0f);                 // Raza cercului
             maximumPoint.setFillColor(getCurrentTheme().maximumPointColor);// Roșu pentru maxim
             maximumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
-            window.draw(maximumPoint);
+            if(draw==true)
+            {
+                  window.draw(maximumPoint);
+            }
+              
+            currentFunction.extremePoints++;
         }
+       
     }
 }
 // functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
@@ -550,20 +568,20 @@ void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStat
 {
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
-        center.y += division;
+        center.y += division/5;
     }
     if (keyStates.at(sf::Keyboard::S) || keyStates.at(sf::Keyboard::Down))
     {
-        center.y -= division;
+        center.y -= division/5;
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
-        center.x += division;
+        center.x += division/5;
         pointsRecalculation = true;
     }
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
-        center.x -= division;
+        center.x -= division/5;
         pointsRecalculation = true;
     }
     // trebuie recalculate punctele doar daca ne miscam stanga sau dreapta deoarece modificam domeniul;

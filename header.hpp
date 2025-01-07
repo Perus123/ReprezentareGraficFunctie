@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <unordered_map>
 using namespace std;
 double extern zoomLevel;
@@ -25,6 +26,7 @@ public:
    vector<string> postfixRow;
    double delta;
    vector<point> values;
+   int extremePoints;
    function();
    friend double executeFunction(double value, const function &a);
    void calculatePoints(double start, double end, double delta);
@@ -53,7 +55,7 @@ class grafic
 public:
    point center;
    double rightEnd, leftEnd;
-   const int pointsNumber = 2000;
+   const int pointsNumber = 5000;
    double delta, division;
    double screenWidth, screenHeight;
    double upperBound, lowerBound;
@@ -62,7 +64,7 @@ public:
    void calculateDeltaDivision();
    void initialiseGraphic(vector<function> &functions);
    void drawNumbers(sf::RenderWindow &window);
-   void drawFunctionLines(sf::RenderWindow &window, const function &currentFunction);
+   void drawFunctionLines(sf::RenderWindow &window, function &currentFunction, sf::Vector2i mouseCoordinates);
    void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool& pointsRecalculation);
    void settingLines(sf::VertexArray& lines);
    void zoomChange(const double constant);
