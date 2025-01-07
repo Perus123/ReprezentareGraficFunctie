@@ -55,10 +55,10 @@ public:
    double RightEnd, LeftEnd;
    const int pointsNumber = 2000;
    double delta, division;
-   double latimeEcran, inaltimeEcran;
+   double screenWidth, screenHeight;
    double upperBound, lowerBound;
    
-   grafic(double screenWidth, double screenHeight);
+   grafic(double screenWidthParameter, double screenHeightParameter);
    void calculateDeltaDivision();
    void initialiseGraphic(vector<function> &functions);
    void drawNumbers(sf::RenderWindow &window);

@@ -33,15 +33,15 @@ void grafic::calculateDeltaDivision()
     delta = (RightEnd - LeftEnd) / pointsNumber;
 }
 
-grafic::grafic(double screenWidth, double screenHeight)
+grafic::grafic(double screenWidthParameter, double screenHeightParameter)
 {
-    center.x = screenWidth / 2;
-    center.y = screenHeight / 2;
+    center.x = screenWidthParameter / 2;
+    center.y = screenHeightParameter / 2;
     LeftEnd = -10;
     RightEnd = 10; /// coordonate stanga si dreapta
-    latimeEcran = screenWidth;
-    inaltimeEcran = screenHeight;
-    division = latimeEcran / 20;
+    screenWidth = screenWidthParameter;
+    screenHeight = screenHeightParameter;
+    division = screenWidth / 20;
     calculateDeltaDivision();
 }
 
@@ -56,7 +56,7 @@ bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow 
 
 void grafic::initialiseGraphic(vector<function> &functions)
 {
-    sf::RenderWindow window(sf::VideoMode(latimeEcran, inaltimeEcran), "Function Plotter");
+    sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Function Plotter");
 
     sf::Font font;
     if (!font.loadFromFile("TIMES.TTF"))
@@ -330,7 +330,7 @@ void grafic::drawNumbers(sf::RenderWindow &window)
 
     ordinate = center.y + division;
     index = -step;
-    while (ordinate <= inaltimeEcran)
+    while (ordinate <= screenHeight)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
@@ -359,7 +359,7 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     LeftEnd = index;
     abscissa = center.x + division;
     index = step;
-    while (abscissa < latimeEcran)
+    while (abscissa < screenWidth)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
@@ -446,28 +446,28 @@ void grafic::settingLines(sf::VertexArray &lines)
 {
     lines[0].position = sf::Vector2f(0, center.y);
     lines[0].color = sf::Color::Black;
-    lines[1].position = sf::Vector2f(latimeEcran, center.y);
+    lines[1].position = sf::Vector2f(screenWidth, center.y);
     lines[1].color = sf::Color::Black;
     lines[2].position = sf::Vector2f(center.x, 0);
     lines[2].color = sf::Color::Black;
-    lines[3].position = sf::Vector2f(center.x, inaltimeEcran);
+    lines[3].position = sf::Vector2f(center.x, screenHeight);
     lines[3].color = sf::Color::Black;
 }
 void grafic::zoomChange(const double zoomConstant)
 {
     if (zoomConstant > 1)
     {
-        center.x -= (center.x - latimeEcran / 2) / 2;
-        center.y -= (center.y - inaltimeEcran / 2) / 2;
-        if (abs(center.x - latimeEcran / 2) < 1)
-            center.x = latimeEcran / 2;
-        if (abs(center.y - inaltimeEcran / 2) < 1)
-            center.y = inaltimeEcran / 2;
+        center.x -= (center.x - screenWidth / 2) / 2;
+        center.y -= (center.y - screenHeight / 2) / 2;
+        if (abs(center.x - screenWidth / 2) < 1)
+            center.x = screenWidth / 2;
+        if (abs(center.y - screenHeight / 2) < 1)
+            center.y = screenHeight / 2;
     }
     else
     {
-        center.x += (center.x - latimeEcran / 2);
-        center.y += (center.y - inaltimeEcran / 2);
+        center.x += (center.x - screenWidth / 2);
+        center.y += (center.y - screenHeight / 2);
     }
 
     LeftEnd *= zoomConstant;
