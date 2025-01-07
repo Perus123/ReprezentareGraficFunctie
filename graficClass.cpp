@@ -181,7 +181,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     while (window.isOpen())
     {
 
-        sf::Vector2i mouseCoordinates = sf::Mouse::getPosition();
+        sf::Vector2i mouseCoordinates = sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -558,7 +558,8 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
                 {   
                     drawMouse=true;
                     mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
-                    mouseHover.textBox.setPosition(sf::Vector2f(point.x - 2.5, point.y - 2.5));
+                    mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5, point.y + 5));
+                    mouseHover.box.setPosition(sf::Vector2f(point.x, point.y));
                 }
             }
 
@@ -577,7 +578,8 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
                 {
                     drawMouse=true;
                     mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
-                    mouseHover.textBox.setPosition(sf::Vector2f(point.x - 2.5, point.y - 2.5));
+                    mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5 , point.y + 5 ));
+                    mouseHover.box.setPosition(sf::Vector2f(point.x, point.y));
                 }
             }
 
