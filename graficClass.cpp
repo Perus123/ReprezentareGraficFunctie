@@ -123,8 +123,6 @@ void grafic::initialiseGraphic(vector<function> &functions)
 {
     sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Function Plotter");
 
-   
-
     initializeThemes();
     setupThemeButton(font);
 
@@ -183,7 +181,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     while (window.isOpen())
     {
 
-        sf::Vector2i mouseCoordinates=sf::Mouse::getPosition();
+        sf::Vector2i mouseCoordinates = sf::Mouse::getPosition();
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -404,7 +402,7 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     double abscissa = center.x, ordinate = center.y;
     double index = 0;
     double step = zoomLevel;
-    
+
     // Draw small lines for axis markers
     while (ordinate > 0)
     {
@@ -412,13 +410,13 @@ void grafic::drawNumbers(sf::RenderWindow &window)
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        
+
         // Draw axis markers using theme colors
         sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        
+
         ordinate -= division;
         index += step;
     }
@@ -431,13 +429,13 @@ void grafic::drawNumbers(sf::RenderWindow &window)
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        
+
         // Draw axis markers using theme colors
         sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        
+
         ordinate += division;
         index -= step;
     }
@@ -451,13 +449,13 @@ void grafic::drawNumbers(sf::RenderWindow &window)
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        
+
         // Draw axis markers using theme colors
         sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        
+
         abscissa -= division;
         index -= step;
     }
@@ -470,13 +468,13 @@ void grafic::drawNumbers(sf::RenderWindow &window)
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
         text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
         window.draw(text);
-        
+
         // Draw axis markers using theme colors
         sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
         window.draw(linie, 2, sf::Lines);
-        
+
         abscissa += division;
         index += step;
     }
@@ -500,8 +498,8 @@ void setText(sf::Text &text, sf::Font &font, double value, double abscissa, doub
 }
 
 void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFunction, sf::Vector2i mouseCoordinates) // unim punctele din grafic pentru functia curenta
-{ 
-   
+{
+
     sf::VertexArray curvedLine(sf::LineStrip);
     for (const auto &value : currentFunction.values) // parcurgerea punctelor functiei
     {
@@ -515,15 +513,16 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
         curvedLine.append(sf::Vertex(point, getCurrentTheme().functionColor)); // adaugam punctul
     }
     window.draw(curvedLine); // aici desenam linia care uneste punctele de pe ecran
-    bool draw=false;
-    if(currentFunction.extremePoints<150)
-        draw=true;
-    else 
-        draw=false;
-    currentFunction.extremePoints=0;
+    bool draw = false;
+    if (currentFunction.extremePoints < 150)
+        draw = true;
+    else
+        draw = false;
+    currentFunction.extremePoints = 0;
     TextofBox mouseHover(font);
-    mouseHover.box.setSize(sf::Vector2f(250,50));
-    if(isDarkTheme==true)
+    mouseHover.box.setSize(sf::Vector2f(250, 50));
+    bool drawMouse=false;
+    if (isDarkTheme == true)
     {
         mouseHover.box.setFillColor(sf::Color::Black);
         mouseHover.box.setOutlineColor(sf::Color::Green);
@@ -535,9 +534,9 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
         double prevY = currentFunction.values[i - 1].y;
         double currY = currentFunction.values[i].y;
         double nextY = currentFunction.values[i + 1].y;
-        
-        //if (prevY == NAN || currY == NAN || nextY == NAN)
-          //  continue;
+
+        // if (prevY == NAN || currY == NAN || nextY == NAN)
+        //   continue;
         double diff = abs(currentFunction.values[i - 1].x - currentFunction.values[i].x);
 
         // Convertim punctul curent la coordonate pe grafic
@@ -548,55 +547,68 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
         // Verificăm dacă este minim sau maxim
         if (currY < prevY && currY < nextY && diff < 1) // Minimul local
         {
-            sf::CircleShape minimumPoint(5.0f);                 // Raza cercului
-            minimumPoint.setFillColor(getCurrentTheme().minimumPointColor);// Verde pentru minim
-            minimumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
-            if(draw==true){
+            sf::CircleShape minimumPoint(5.0f);                             // Raza cercului
+            minimumPoint.setFillColor(getCurrentTheme().minimumPointColor); // Verde pentru minim
+            minimumPoint.setPosition(point.x - 5, point.y - 5);             // Centrăm cercul
+            if (draw == true)
+            {
                 window.draw(minimumPoint);
-                mouseHover.textBox.setString(to_string(xPunct)+" "+to_string(yPunct));
-                mouseHover.textBox.setPosition(sf::Vector2f(point.x-2.5, point.y-2.5));
+                double inside = sqrt(pow(abs(mouseCoordinates.x - point.x), 2) + pow(abs(mouseCoordinates.y - point.y), 2));
+                if (inside <= 5.0f)
+                {   
+                    drawMouse=true;
+                    mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
+                    mouseHover.textBox.setPosition(sf::Vector2f(point.x - 2.5, point.y - 2.5));
+                }
             }
-                
+
             currentFunction.extremePoints++;
         }
         else if (currY > prevY && currY > nextY && diff < 1) // Maximul local
         {
-            sf::CircleShape maximumPoint(5.0f);                 // Raza cercului
-            maximumPoint.setFillColor(getCurrentTheme().maximumPointColor);// Roșu pentru maxim
-            maximumPoint.setPosition(point.x - 5, point.y - 5); // Centrăm cercul
-            if(draw==true)
+            sf::CircleShape maximumPoint(5.0f);                             // Raza cercului
+            maximumPoint.setFillColor(getCurrentTheme().maximumPointColor); // Roșu pentru maxim
+            maximumPoint.setPosition(point.x - 5, point.y - 5);             // Centrăm cercul
+            if (draw == true)
             {
-                  window.draw(maximumPoint);
-                  mouseHover.textBox.setString(to_string(xPunct)+" "+to_string(yPunct));
-                  mouseHover.textBox.setPosition(sf::Vector2f(point.x-2.5, point.y-2.5));
+                window.draw(maximumPoint);
+                double inside = sqrt(pow(abs(mouseCoordinates.x - point.x), 2) + pow(abs(mouseCoordinates.y - point.y), 2));
+                if (inside <= 5.0f)
+                {
+                    drawMouse=true;
+                    mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
+                    mouseHover.textBox.setPosition(sf::Vector2f(point.x - 2.5, point.y - 2.5));
+                }
             }
-              
+
             currentFunction.extremePoints++;
         }
-       
     }
-    window.draw(mouseHover.box);
-    window.draw(mouseHover.textBox);
+    if(drawMouse){
+        window.draw(mouseHover.box);
+        window.draw(mouseHover.textBox);
+    }
+ 
 }
 // functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
 void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &pointsRecalculation)
 {
     if (keyStates.at(sf::Keyboard::W) || keyStates.at(sf::Keyboard::Up))
     {
-        center.y += division/5;
+        center.y += division / 5;
     }
     if (keyStates.at(sf::Keyboard::S) || keyStates.at(sf::Keyboard::Down))
     {
-        center.y -= division/5;
+        center.y -= division / 5;
     }
     if (keyStates.at(sf::Keyboard::A) || keyStates.at(sf::Keyboard::Left))
     {
-        center.x += division/5;
+        center.x += division / 5;
         pointsRecalculation = true;
     }
     if (keyStates.at(sf::Keyboard::D) || keyStates.at(sf::Keyboard::Right))
     {
-        center.x -= division/5;
+        center.x -= division / 5;
         pointsRecalculation = true;
     }
     // trebuie recalculate punctele doar daca ne miscam stanga sau dreapta deoarece modificam domeniul;
