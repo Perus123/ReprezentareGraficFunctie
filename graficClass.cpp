@@ -4,16 +4,17 @@ double zoomLevel = 1;
 class TextofBox
 {
 public:
-    sf::RectangleShape box, deleteButton;
-    sf::Text textBox, textButon;
+    sf::RectangleShape box, deleteButton;// box reprezinta fundalul
+    sf::Text textBox, textButon;// textBox este textul functiei afisate iar textButton textul butonului
 
     TextofBox(sf::Font &f)
     {
-
+        //setam fontul default pentru program
         box.setSize(sf::Vector2f(400, 40));
         box.setFillColor(sf::Color::White);
         box.setOutlineThickness(2);
         box.setOutlineColor(sf::Color::Black);
+        //setam carcateristicile la butonul de delete
         deleteButton.setSize(sf::Vector2f(100, 40));
         deleteButton.setFillColor(sf::Color::Green);
         deleteButton.setOutlineThickness(2);
@@ -33,7 +34,7 @@ void grafic::calculateDeltaDivision()
     delta = (RightEnd - LeftEnd) / pointsNumber;
 }
 
-grafic::grafic(double screenWidthParameter, double screenHeightParameter)
+grafic::grafic(double screenWidthParameter, double screenHeightParameter)//constructorul clasei grafic
 {
     center.x = screenWidthParameter / 2;
     center.y = screenHeightParameter / 2;
@@ -45,7 +46,7 @@ grafic::grafic(double screenWidthParameter, double screenHeightParameter)
     calculateDeltaDivision();
 }
 
-bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)
+bool isMouseOverButton(const sf::RectangleShape &button, const sf::RenderWindow &window)//functia pentru a vedea daca coordonatele mouseului se afla in interiorul unui buton
 {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f buttonPos = button.getPosition();
@@ -65,28 +66,28 @@ void grafic::initialiseGraphic(vector<function> &functions)
         return;
     }
 
-    // Input box setup
+    //setup-ul pentru caseta de input
     sf::RectangleShape inputBox(sf::Vector2f(400, 40));
     inputBox.setPosition(10, 10);
     inputBox.setFillColor(sf::Color::White);
     inputBox.setOutlineThickness(2);
     inputBox.setOutlineColor(sf::Color::Black);
 
-    // Input text setup
+    // setup-ul pentru textul din caseta de input
     sf::Text inputText;
     inputText.setFont(font);
     inputText.setCharacterSize(20);
     inputText.setFillColor(sf::Color::Black);
     inputText.setPosition(15, 15);
 
-    // Enter button setup
+    // setup pentru butonul de enter
     sf::RectangleShape enterButton(sf::Vector2f(100, 40));
     enterButton.setPosition(420, 10);
     enterButton.setFillColor(sf::Color::Green);
     enterButton.setOutlineThickness(2);
     enterButton.setOutlineColor(sf::Color::Black);
 
-    // Enter button text
+    // setup pentru textul din caseta de enter
     sf::Text enterButtonText;
     enterButtonText.setFont(font);
     enterButtonText.setString("Plot");
@@ -102,8 +103,8 @@ void grafic::initialiseGraphic(vector<function> &functions)
     errorText.setPosition(10, 60);
 
     sf::Vector2f coordonateAfisareFunctie = {10.0, 55.0}; /// 10 spatiu + 40 input + 5 bordura
-    vector<TextofBox> chenareFunctii;
-    // Setup for coordinate system
+    vector<TextofBox> borderFunctions;// chenareFunctii
+
     sf::VertexArray lines(sf::Lines, 4);
     settingLines(lines);
 
@@ -111,6 +112,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     bool isInputActive = false;
     bool needsRecalculation = false;
     functions.clear();
+    //map pentru initializare de setup, inputurile sunt marcate ca si false 
     unordered_map<sf::Keyboard::Key, bool> keyStates = {
         {sf::Keyboard::W, false}, {sf::Keyboard::A, false}, {sf::Keyboard::S, false}, {sf::Keyboard::D, false}, {sf::Keyboard::Left, false}, {sf::Keyboard::Right, false}, {sf::Keyboard::Up, false}, {sf::Keyboard::Down, false}};
 
@@ -127,32 +129,31 @@ void grafic::initialiseGraphic(vector<function> &functions)
                 window.close();
             }
 
-            // Handle mouse clicks
+            //handling pt click-urile de la mouse
             if (event.type == sf::Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    for(vector<TextofBox>::iterator i = chenareFunctii.begin(); i!=chenareFunctii.end();)
+                    for(vector<TextofBox>::iterator i = borderFunctions.begin(); i!=borderFunctions.end();)//nu-s sigur ca am inteles aici complet
                     {   
                         TextofBox auxButton=*i;
                         if(auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)){
-                            chenareFunctii.erase(i);
-                            functions.erase(functions.begin()+(i-chenareFunctii.begin()));
+                            borderFunctions.erase(i);
+                            functions.erase(functions.begin()+(i-borderFunctions.begin()));
                         }
                         else
                             i++;
                     }
-                    if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    if (inputBox.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))//daca introducem text, facem caseta albastra
                     {
                         isInputActive = true;
                         inputBox.setOutlineColor(sf::Color::Blue);
                     }
-                    // Check if clicked on enter button
+                    // Daca apasam pe butonul enter
                     else if (enterButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
-                    {
-                        if (!currentInput.empty())
+                    {//trebuie adaugat daca chestia aia nu e functie ig
+                        if (!currentInput.empty())//daca avem o functie scrisa inauntru
                         {
-
                             function newFunc;
                             TextofBox newChenar(font);
                             newFunc.input = currentInput;
@@ -161,7 +162,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             newFunc.calculatePoints(LeftEnd, RightEnd, delta);
                             functions.push_back(newFunc);
                             newChenar.textBox.setString(newFunc.input);
-                            chenareFunctii.push_back(newChenar);
+                            borderFunctions.push_back(newChenar);
                             needsRecalculation = false;
                             isInputActive = false;
                             errorText.setString("");
@@ -175,21 +176,20 @@ void grafic::initialiseGraphic(vector<function> &functions)
                 }
             }
 
-            // Handle text input
+            // verificam input-ul
             if (isInputActive && event.type == sf::Event::TextEntered)
             {
                 if (event.text.unicode == '\b')
-                { // Backspace
+                { //daca apasam pe backspace, stergem un element
                     if (!currentInput.empty())
                     {
                         currentInput.pop_back();
                     }
                 }
                 else if (event.text.unicode == 13)
-                { // Enter key
+                { //daca apas pe enter
                     if (!currentInput.empty())
                     {
-
                         function newFunc;
                         TextofBox newChenar(font);
                         newFunc.input = currentInput;
@@ -198,7 +198,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         newFunc.calculatePoints(LeftEnd, RightEnd, delta);
                         functions.push_back(newFunc);
                         newChenar.textBox.setString(newFunc.input);
-                        chenareFunctii.push_back(newChenar);
+                        borderFunctions.push_back(newChenar);
                         needsRecalculation = false;
                         errorText.setString("");
                         isInputActive = false;
@@ -212,14 +212,14 @@ void grafic::initialiseGraphic(vector<function> &functions)
                 inputText.setString(currentInput);
             }
 
-            // Handle keyboard movement
+            // cum procesam input-ul de la tastatura
             if (event.type == sf::Event::KeyPressed)
             {
                 if (keyStates.find(event.key.code) != keyStates.end())
                 {
                     keyStates[event.key.code] = true;
                 }
-                // Handle zoom
+                // procesare zoom
                 if (event.key.code == sf::Keyboard::Add)
                 {
                     zoomChange(0.5);
@@ -240,14 +240,13 @@ void grafic::initialiseGraphic(vector<function> &functions)
             }
         }
 
-        // Handle continuous movement
+        // daca ne miscam incontinuu
         if (!isInputActive)
-        { // Only allow movement if we have a function
+        { // ne putem misca doar daca avem o functie (sa ramana feature saaau ?)
             screenMovement(keyStates, needsRecalculation);
             settingLines(lines);
         }
 
-        // Recalculate points if needed
 
         // Update hover effects
         if (enterButton.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y))
@@ -259,7 +258,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
             enterButton.setFillColor(sf::Color::Green);
         }
 
-        // Drawing
+        // Desenare
 
         // Draw coordinate system
         window.clear(sf::Color::White);
@@ -287,16 +286,16 @@ void grafic::initialiseGraphic(vector<function> &functions)
         window.draw(enterButtonText);
         window.draw(errorText);
         cout << LeftEnd << " " << RightEnd << '\n';
-        for (int i = 0; i < chenareFunctii.size(); i++)
+        for (int i = 0; i < borderFunctions.size(); i++)
         {
-            chenareFunctii[i].box.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
-            chenareFunctii[i].textBox.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 5, coordonateAfisareFunctie.y + i * 40 + 5));
-            chenareFunctii[i].deleteButton.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 410, coordonateAfisareFunctie.y + i * 40));
-            chenareFunctii[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 415, coordonateAfisareFunctie.y + i * 40 + 5));
-            window.draw(chenareFunctii[i].deleteButton);
-            window.draw(chenareFunctii[i].box);
-            window.draw(chenareFunctii[i].textBox);
-            window.draw(chenareFunctii[i].textButon);
+            borderFunctions[i].box.setPosition(sf::Vector2f(coordonateAfisareFunctie.x, coordonateAfisareFunctie.y + i * 40));
+            borderFunctions[i].textBox.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 5, coordonateAfisareFunctie.y + i * 40 + 5));
+            borderFunctions[i].deleteButton.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 410, coordonateAfisareFunctie.y + i * 40));
+            borderFunctions[i].textButon.setPosition(sf::Vector2f(coordonateAfisareFunctie.x + 415, coordonateAfisareFunctie.y + i * 40 + 5));
+            window.draw(borderFunctions[i].deleteButton);
+            window.draw(borderFunctions[i].box);
+            window.draw(borderFunctions[i].textBox);
+            window.draw(borderFunctions[i].textButon);
         }
 
         window.display();
