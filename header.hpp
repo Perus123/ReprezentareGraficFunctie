@@ -34,14 +34,28 @@ public:
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
+
+
+struct Theme {
+    sf::Color backgroundColor;
+    sf::Color textColor;
+    sf::Color axisColor;
+    sf::Color functionColor;
+    sf::Color inputBoxFillColor;
+    sf::Color inputBoxOutlineColor;
+    sf::Color buttonFillColor;
+    sf::Color buttonHoverColor;
+    sf::Color minimumPointColor;
+    sf::Color maximumPointColor;
+};
 class grafic
 {
 public:
-   point  center;
+   point center;
    double RightEnd, LeftEnd;
    const int pointsNumber = 2000;
    double delta, division;
-   double latimeEcran, inaltimeEcran;// avem deja screen width si screen height
+   double latimeEcran, inaltimeEcran;
    double upperBound, lowerBound;
    
    grafic(double screenWidth, double screenHeight);
@@ -49,9 +63,21 @@ public:
    void initialiseGraphic(vector<function> &functions);
    void drawNumbers(sf::RenderWindow &window);
    void drawFunctionLines(sf::RenderWindow &window, const function &currentFunction);
-   void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates,bool& pointsRecalculation);
+   void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool& pointsRecalculation);
    void settingLines(sf::VertexArray& lines);
    void zoomChange(const double constant);
+
+private:
+    bool isDarkTheme;
+    Theme lightTheme;
+    Theme darkTheme;
+    sf::RectangleShape themeButton;
+    sf::Text themeButtonText;
+    
+    void initializeThemes();
+    void setupThemeButton(sf::Font& font);
+    void toggleTheme();
+    Theme& getCurrentTheme() { return isDarkTheme ? darkTheme : lightTheme; }
 };
 
 bool isFunction(const string &s);
