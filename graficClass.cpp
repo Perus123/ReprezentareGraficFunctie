@@ -2,7 +2,7 @@
 
 void grafic::initializeThemes() // initializam temele
 {
-    // Light theme (default)
+    // tema default
     lightTheme = {
         sf::Color::White,     // backgroundColor
         sf::Color::Black,     // textColor
@@ -16,7 +16,7 @@ void grafic::initializeThemes() // initializam temele
         sf::Color::Red        // maximumPointColor
     };
 
-    // Dark theme
+    // tema intunecata
     darkTheme = {
         sf::Color(30, 30, 30),  // backgroundColor
         sf::Color::White,       // textColor
