@@ -155,6 +155,9 @@ void grafic::initialiseGraphic(vector<function> &functions)
     enterButtonText.setFillColor(sf::Color::Black);
     enterButtonText.setPosition(425, 20);
 
+    //setup window tabelare+integrale
+
+
     // Error message setup
     sf::Text errorText;
     errorText.setFont(font);
@@ -242,13 +245,16 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             newFunc.input = currentInput;
                             /// curatareInput(newFunc.input);
                             newFunc.postfixOrderCalculation();
-                            newFunc.calculatePoints(leftEnd, rightEnd, delta);
-                            functions.push_back(newFunc);
-                            newChenar.textBox.setString(newFunc.input);
-                            borderFunctions.push_back(newChenar);
-                            needsRecalculation = false;
-                            isInputActive = false;
-                            errorText.setString("");
+                            if (newFunc.calculatePoints(leftEnd, rightEnd, delta))
+                            {
+                                functions.push_back(newFunc);
+                                newChenar.textBox.setString(newFunc.input);
+                                borderFunctions.push_back(newChenar);
+                                needsRecalculation = false;
+                                errorText.setString("");
+                                isInputActive = false;
+                                inputBox.setOutlineColor(sf::Color::Black);
+                            }
                         }
                     }
                     else
@@ -278,14 +284,16 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         newFunc.input = currentInput;
                         /// curatareInput(newFunc.input);
                         newFunc.postfixOrderCalculation();
-                        newFunc.calculatePoints(leftEnd, rightEnd, delta);
-                        functions.push_back(newFunc);
-                        newChenar.textBox.setString(newFunc.input);
-                        borderFunctions.push_back(newChenar);
-                        needsRecalculation = false;
-                        errorText.setString("");
-                        isInputActive = false;
-                        inputBox.setOutlineColor(sf::Color::Black);
+                        if (newFunc.calculatePoints(leftEnd, rightEnd, delta))
+                        {
+                            functions.push_back(newFunc);
+                            newChenar.textBox.setString(newFunc.input);
+                            borderFunctions.push_back(newChenar);
+                            needsRecalculation = false;
+                            errorText.setString("");
+                            isInputActive = false;
+                            inputBox.setOutlineColor(sf::Color::Black);
+                        }
                     }
                 }
                 else if (event.text.unicode < 128)
@@ -521,7 +529,7 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
     currentFunction.extremePoints = 0;
     TextofBox mouseHover(font);
     mouseHover.box.setSize(sf::Vector2f(150, 30));
-    bool drawMouse=false;
+    bool drawMouse = false;
     if (isDarkTheme == true)
     {
         mouseHover.box.setFillColor(sf::Color::Black);
@@ -555,11 +563,11 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
                 window.draw(minimumPoint);
                 double inside = sqrt(pow(abs(mouseCoordinates.x - point.x), 2) + pow(abs(mouseCoordinates.y - point.y), 2));
                 if (inside <= 5.0f)
-                {   
-                    drawMouse=true;
+                {
+                    drawMouse = true;
                     mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
                     mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5, point.y + 5));
-                    mouseHover.box.setPosition(sf::Vector2f(point.x+1, point.y+1));
+                    mouseHover.box.setPosition(sf::Vector2f(point.x + 1, point.y + 1));
                 }
             }
 
@@ -576,21 +584,21 @@ void grafic::drawFunctionLines(sf::RenderWindow &window, function &currentFuncti
                 double inside = sqrt(pow(abs(mouseCoordinates.x - point.x), 2) + pow(abs(mouseCoordinates.y - point.y), 2));
                 if (inside <= 5.0f)
                 {
-                    drawMouse=true;
+                    drawMouse = true;
                     mouseHover.textBox.setString(to_string(xPunct) + " " + to_string(yPunct));
-                    mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5 , point.y + 5 ));
-                    mouseHover.box.setPosition(sf::Vector2f(point.x+1, point.y+1));
+                    mouseHover.textBox.setPosition(sf::Vector2f(point.x + 5, point.y + 5));
+                    mouseHover.box.setPosition(sf::Vector2f(point.x + 1, point.y + 1));
                 }
             }
 
             currentFunction.extremePoints++;
         }
     }
-    if(drawMouse){
+    if (drawMouse)
+    {
         window.draw(mouseHover.box);
         window.draw(mouseHover.textBox);
     }
- 
 }
 // functia propriu zisa care creeaza miscarea pe ecran, incrementand sau decrementand coorodnatele cu diviziunea aleasa
 void grafic::screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool &pointsRecalculation)
@@ -649,4 +657,27 @@ void grafic::zoomChange(const double zoomConstant)
     zoomLevel *= zoomConstant;
 
     calculateDeltaDivision();
+}
+void grafic::showCalculationWindow() {
+    sf::RenderWindow calcWindow(sf::VideoMode(400, 300), "Fereastra Tabelare/Integrale");
+
+    while (calcWindow.isOpen()) {
+        sf::Event event;
+        while (calcWindow.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                calcWindow.close();
+        }
+
+        calcWindow.clear(sf::Color::White);
+
+        // Poți adăuga aici desenarea tabelului, textelor, etc.
+        sf::Font font;
+        font.loadFromFile("TIMES.TTF");
+        sf::Text text("Calculare integrale...", font, 20);
+        text.setFillColor(sf::Color::Black);
+        text.setPosition(50, 50);
+        calcWindow.draw(text);
+
+        calcWindow.display();
+    }
 }

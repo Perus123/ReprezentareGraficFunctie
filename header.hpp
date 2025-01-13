@@ -28,8 +28,8 @@ public:
    vector<point> values;
    int extremePoints;
    function();
-   friend double executeFunction(double value, const function &a);
-   void calculatePoints(double start, double end, double delta);
+   friend double executeFunction(double value, const function &a, bool& validFunction);
+   bool calculatePoints(double start, double end, double delta);
    void postfixOrderCalculation();
    void prelucrareInput();
 
@@ -68,6 +68,7 @@ public:
    void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool& pointsRecalculation);
    void settingLines(sf::VertexArray& lines);
    void zoomChange(const double constant);
+   void showCalculationWindow();
 
 private:
     bool isDarkTheme;

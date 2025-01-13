@@ -6,7 +6,7 @@ function::function()
     extremePoints=0;
 }
 
-double executeFunction(double variable, const function &a)
+double executeFunction(double variable, const function &a, bool& validFunction)
 {
     stack<double> stiva;
     int i = 0;
@@ -18,6 +18,11 @@ double executeFunction(double variable, const function &a)
             stiva.push(variable);
         else if (isdigit(element[0]))
             stiva.push(stof(element));
+        else if(element.size()==1)
+            {
+                validFunction=false;
+                return 0;
+            }
         else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
         {
             double var = stiva.top();
@@ -44,6 +49,26 @@ double executeFunction(double variable, const function &a)
                 var = tan(var);
                 stiva.push(var);
             }
+            else if(element=="arctan")
+            {
+                var=atan(var);
+                stiva.push(var);
+            }
+            else if(element=="arcsin")
+            {
+                var=asin(var);
+                stiva.push(var);
+            }
+            else if(element=="arccos")
+            {
+                var=acos(var);
+                stiva.push(var);
+            }
+            else{
+                validFunction=false;
+                return 0;
+            }
+            
         }
         else // avem 2 variabile despartite printr-un operator
         {
@@ -72,17 +97,22 @@ double executeFunction(double variable, const function &a)
     return stiva.top();
 }
 
-void function::calculatePoints(double start, double end, double delta)
+bool function::calculatePoints(double start, double end, double delta)
 {
     values.clear();
     double value = start;
-    while (value <= end)
-    {
-        double res = executeFunction(value, *this);
+    bool validFunction=true;
+    double res = executeFunction(value, *this, validFunction);
+    while (value <= end&&validFunction)
+    {   
+        
+        
         values.emplace_back(point({value, res}));
+        res = executeFunction(value, *this, validFunction);
         value += delta;
     }
-    cout << values.size() << '\n';
+    return validFunction;
+    
 }
 
 void function::postfixOrderCalculation()
