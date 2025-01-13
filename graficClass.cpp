@@ -243,7 +243,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                     }
                     if(integralWindowButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                     {
-                            showCalculationWindow();
+                            showCalculationWindow(functions);
                     }
                     for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
                     {   
@@ -415,6 +415,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
         }
 
         // Draw functions with theme colors
+        int index=0;
         for (auto &func : functions)
         {
             drawFunctionLines(window, func, mouseCoordinates, index);
@@ -711,7 +712,7 @@ void grafic::zoomChange(const double zoomConstant)
 
     calculateDeltaDivision();
 }
-void grafic::showCalculationWindow() {
+void grafic::showCalculationWindow(const vector<function>& funtions) {
     sf::RenderWindow calcWindow(sf::VideoMode(400, 300), "Fereastra Tabelare/Integrale");
 
     while (calcWindow.isOpen())
