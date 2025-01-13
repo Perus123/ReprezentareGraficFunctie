@@ -3,30 +3,36 @@
 function::function()
 {
     input = "";
-    extremePoints=0;
+    extremePoints = 0;
+    sum = 0;
 }
 
-double executeFunction(double variable, const function &a, bool& validFunction)
+double executeFunction(double variable, const function &a, bool &validFunction)
 {
     stack<double> stiva;
     int i = 0;
+
     for (int i = 0; i < a.postfixRow.size(); i++)
     {
+        
+
         // incepem prin a separa variabilele si le punem pe stiva
         string element = a.postfixRow[i];
+
         if (element == "x")
             stiva.push(variable);
         else if (isdigit(element[0]))
             stiva.push(stof(element));
-        else if(element.size()==1)
-            {
-                validFunction=false;
-                return 0;
-            }
+        
         else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
         {
-            double var = stiva.top();
-            stiva.pop();
+
+            double var;
+            if (stiva.empty() == 0)
+            {
+                var = stiva.top();
+                stiva.pop();
+            }
             if (element == "ln")
             {
                 if (var <= 0)
@@ -49,38 +55,52 @@ double executeFunction(double variable, const function &a, bool& validFunction)
                 var = tan(var);
                 stiva.push(var);
             }
-            else if(element=="arctan")
+            else if (element == "arctan")
             {
-                var=atan(var);
+                var = atan(var);
                 stiva.push(var);
             }
-            else if(element=="arcsin")
+            else if (element == "arcsin")
             {
-                var=asin(var);
+                var = asin(var);
                 stiva.push(var);
             }
-            else if(element=="arccos")
+            else if (element == "arccos")
             {
-                var=acos(var);
+                var = acos(var);
                 stiva.push(var);
             }
-            else{
-                validFunction=false;
+            else
+            {
+                validFunction = false;
+                
                 return 0;
             }
-            
         }
         else // avem 2 variabile despartite printr-un operator
-        {
-            double var1 = stiva.top();
-            stiva.pop();
+        {   
+            double var1;
+            bool check=false;
+            if (stiva.empty() == 0)
+            {
+                var1 = stiva.top();
+                check=true;
+                stiva.pop();
+            } 
 
             double var2 = 0;
             if (stiva.empty() == 0)
             {
                 var2 = stiva.top();
                 stiva.pop();
+                
             }
+            if(check==false)
+            {
+                validFunction=false;
+                return 0;
+            }
+            
 
             if (element == "+")
                 stiva.push(var2 + var1);
@@ -101,24 +121,25 @@ bool function::calculatePoints(double start, double end, double delta)
 {
     values.clear();
     double value = start;
-    bool validFunction=true;
+    bool validFunction = true;
+    
     double res = executeFunction(value, *this, validFunction);
-    while (value <= end&&validFunction)
-    {   
-        
-        
+    
+    while (value <= end && validFunction)
+    {
+       
         values.emplace_back(point({value, res}));
         res = executeFunction(value, *this, validFunction);
         value += delta;
     }
+   
     return validFunction;
-    
 }
 
 void function::postfixOrderCalculation()
 {
     int i = 0, length = input.size();
-    std::string number = "";            /// string auxiliar pentru adaugat elemente in stiva
+    std::string number = "";           /// string auxiliar pentru adaugat elemente in stiva
     std::stack<std::string> operators; /// stiva de operatori
 
     // 2*3 + (8-3)/2
@@ -135,6 +156,7 @@ void function::postfixOrderCalculation()
                 c = input[i];
             }
             i--;
+
             operators.push(number); // adaugam la final "numele" functiei in stiva de operatori
             number = "";            /// creeaza functie si o pune in stack
         }

@@ -27,6 +27,7 @@ public:
    double delta;
    vector<point> values;
    int extremePoints;
+   double sum;
    function();
    friend double executeFunction(double value, const function &a, bool& validFunction);
    bool calculatePoints(double start, double end, double delta);
@@ -57,18 +58,21 @@ public:
    double rightEnd, leftEnd;
    const int pointsNumber = 5000;
    double delta, division;
+   std::vector<sf::Color> colors1;
+   std::vector<sf::Color> colors2;
    double screenWidth, screenHeight;
    double upperBound, lowerBound;
+  
    sf::Font font;
    grafic(double screenWidthParameter, double screenHeightParameter);//constructorul clasei, initializeaza obiectul grafic cu dimensiunile graficului
    void calculateDeltaDivision();
    void initialiseGraphic(vector<function> &functions);
    void drawNumbers(sf::RenderWindow &window);
-   void drawFunctionLines(sf::RenderWindow &window, function &currentFunction, sf::Vector2i mouseCoordinates);
+   void drawFunctionLines(sf::RenderWindow &window, function &currentFunction, sf::Vector2i mouseCoordinates, int index);
    void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool& pointsRecalculation);
    void settingLines(sf::VertexArray& lines);
    void zoomChange(const double constant);
-   void showCalculationWindow();
+   void showCalculationWindow(const vector<function>& f);
 
 private:
     bool isDarkTheme;
