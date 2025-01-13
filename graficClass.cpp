@@ -53,7 +53,7 @@ void grafic::toggleTheme()
     isDarkTheme = !isDarkTheme;
     Theme &currentTheme = getCurrentTheme();
 
-    //dam update la butoanele pentru theme
+    // dam update la butoanele pentru theme
     themeButton.setFillColor(currentTheme.buttonFillColor);
     themeButton.setOutlineColor(currentTheme.inputBoxOutlineColor);
     themeButtonText.setFillColor(currentTheme.textColor);
@@ -95,10 +95,10 @@ void grafic::calculateDeltaDivision()
 
 grafic::grafic(double screenWidthParameter, double screenHeightParameter) // constructorul clasei grafic
 {
-    center.x = screenWidthParameter / 2;
+    center.x = screenWidthParameter / 2; // coordonate pentru centru
     center.y = screenHeightParameter / 2;
-    leftEnd = 0-(screenWidth/60/2);
-    rightEnd = 0+(screenWidth/60/2); /// coordonate stanga si dreapta
+    leftEnd = 0 - (screenWidth / division / 2);
+    rightEnd = 0 + (screenWidth / division / 2); /// coordonate stanga si dreapta
     screenWidth = screenWidthParameter;
     screenHeight = screenHeightParameter;
     division = 60;
@@ -155,8 +155,8 @@ void grafic::initialiseGraphic(vector<function> &functions)
     enterButtonText.setFillColor(sf::Color::Black);
     enterButtonText.setPosition(425, 20);
 
-    //setup window integrale
-    sf::RectangleShape integralWindowButton(sf::Vector2f(100,40));
+    // setup window integrale
+    sf::RectangleShape integralWindowButton(sf::Vector2f(100, 40));
     integralWindowButton.setPosition(screenWidth - 110, 50);
     integralWindowButton.setFillColor(getCurrentTheme().buttonFillColor);
     integralWindowButton.setOutlineThickness(2);
@@ -168,7 +168,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     textIntegralWindow.setCharacterSize(15);
     textIntegralWindow.setFillColor(getCurrentTheme().textColor);
     textIntegralWindow.setPosition(screenWidth - 105, 60);
-    
+
     // Error message setup
     sf::Text errorText;
     errorText.setFont(font);
@@ -177,7 +177,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
     errorText.setPosition(10, 60);
 
     sf::Vector2f coordonatesandFunctionDisplay = {10.0, 55.0}; /// 10 spatiu + 40 input + 5 bordura , locul de unde incepe afisarea functiei
-    vector<TextofBox> borderFunctions;                         // chenareFunctii, vector care stocheaza elemente de tipul TextofBox (asta inseamna gen, chenare and all ??)
+    vector<TextofBox> borderFunctions;                         // chenareFunctii, vector care stocheaza elemente de tipul TextofBox, adica chenare
 
     sf::VertexArray lines(sf::Lines, 4);
     settingLines(lines);
@@ -194,7 +194,6 @@ void grafic::initialiseGraphic(vector<function> &functions)
 
     while (window.isOpen())
     {
-
         sf::Vector2i mouseCoordinates = sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -212,17 +211,17 @@ void grafic::initialiseGraphic(vector<function> &functions)
                     {
                         toggleTheme();
 
-                        // Update all UI elements with new theme colors
+                        // dam update la toate elementele de UI
                         inputBox.setFillColor(getCurrentTheme().inputBoxFillColor);
                         inputBox.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
                         inputText.setFillColor(getCurrentTheme().textColor);
                         enterButton.setFillColor(getCurrentTheme().buttonFillColor);
                         enterButtonText.setFillColor(getCurrentTheme().textColor);
                         integralWindowButton.setFillColor(getCurrentTheme().buttonFillColor);
-                        errorText.setFillColor(sf::Color::Red); // Keep error text red in both themes
+                        errorText.setFillColor(sf::Color::Red); //pastram rosu ca si culoare pentru erori
 
-                        // Update existing function boxes
-                        for (auto &box : borderFunctions)
+                        // trebuie sa dam update butoanele pentru functii
+                        for (auto &box : borderFunctions)// luam toate elementele de tip chenare, folosim referinta ca sa mearga mai repede , fara copiere
                         {
                             box.box.setFillColor(getCurrentTheme().inputBoxFillColor);
                             box.box.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
@@ -231,14 +230,14 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             box.textButon.setFillColor(getCurrentTheme().textColor);
                         }
                     }
-                    if(integralWindowButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    if (integralWindowButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))//dam pop-up la fereastra pentru integrale
                     {
-                            showCalculationWindow();
+                        showCalculationWindow();
                     }
                     for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
-                    {   
-                        TextofBox auxButton = *i;
-                        if (auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    {
+                        TextofBox auxButton = *i;//dereferentiere, obtin elementul curent
+                        if (auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))//daca dam click pe butonul de delete
                         {
                             borderFunctions.erase(i);
                             functions.erase(functions.begin() + (i - borderFunctions.begin()));
@@ -256,12 +255,12 @@ void grafic::initialiseGraphic(vector<function> &functions)
                     {                              // trebuie adaugat daca chestia aia nu e functie ig
                         if (!currentInput.empty()) // daca avem o functie scrisa inauntru
                         {
-                            function newFunc;
-                            TextofBox newChenar(font);
+                            function newFunc;//creeam un obiect function
+                            TextofBox newChenar(font);//si un chenar nou
                             newFunc.input = currentInput;
                             /// curatareInput(newFunc.input);
-                            newFunc.postfixOrderCalculation();
-                            if (newFunc.calculatePoints(leftEnd, rightEnd, delta))
+                            newFunc.postfixOrderCalculation();//calculam ordinea post fixa
+                            if (newFunc.calculatePoints(leftEnd, rightEnd, delta))//calculam pe un interval
                             {
                                 functions.push_back(newFunc);
                                 newChenar.textBox.setString(newFunc.input);
@@ -312,9 +311,9 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         }
                     }
                 }
-                else if (event.text.unicode < 128)
+                else if (event.text.unicode < 128)//permite doar caractere ascii
                 { // Regular character
-                    currentInput += static_cast<char>(event.text.unicode);
+                    currentInput += static_cast<char>(event.text.unicode);//Convertește codul Unicode al caracterului introdus într-un char
                 }
                 inputText.setString(currentInput);
             }
@@ -367,7 +366,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
         // Desenare
         window.clear(getCurrentTheme().backgroundColor);
 
-        // Update the color of coordinate system lines
+        //dam update la culoarea axelor
         lines[0].color = getCurrentTheme().axisColor;
         lines[1].color = getCurrentTheme().axisColor;
         lines[2].color = getCurrentTheme().axisColor;
@@ -384,13 +383,13 @@ void grafic::initialiseGraphic(vector<function> &functions)
             needsRecalculation = false;
         }
 
-        // Draw functions with theme colors
+        // desenam functiile cu diferite culori
         for (auto &func : functions)
         {
             drawFunctionLines(window, func, mouseCoordinates);
         }
 
-        // Draw UI elements
+        // desenare elemente de ui
         window.draw(inputBox);
         window.draw(inputText);
         window.draw(enterButton);
@@ -429,15 +428,15 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     double index = 0;
     double step = zoomLevel;
 
-    // Draw small lines for axis markers
+    // desenam linii mici pentru a determina punctele de referinta
     while (ordinate > 0)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
-        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
+        text.setFillColor(getCurrentTheme().textColor); //folosim culoarea de la tema pentru text
         window.draw(text);
 
-        // Draw axis markers using theme colors
+        // desenam liniile pentru axe
         sf::Vertex point1(sf::Vector2f(abscissa - 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa + 5, ordinate), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
@@ -473,10 +472,9 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
-        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
+        text.setFillColor(getCurrentTheme().textColor);
         window.draw(text);
 
-        // Draw axis markers using theme colors
         sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
@@ -492,10 +490,9 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
-        text.setFillColor(getCurrentTheme().textColor); // Use theme color for text
+        text.setFillColor(getCurrentTheme().textColor);
         window.draw(text);
 
-        // Draw axis markers using theme colors
         sf::Vertex point1(sf::Vector2f(abscissa, ordinate - 5), getCurrentTheme().axisColor);
         sf::Vertex point2(sf::Vector2f(abscissa, ordinate + 5), getCurrentTheme().axisColor);
         sf::Vertex linie[] = {point1, point2};
@@ -507,7 +504,6 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     rightEnd = index;
 }
 
-// Also modify the setText function to use theme colors
 void setText(sf::Text &text, sf::Font &font, double value, double abscissa, double ordinate)
 {
     text.setFont(font);
@@ -519,7 +515,6 @@ void setText(sf::Text &text, sf::Font &font, double value, double abscissa, doub
     }
     text.setString(result);
     text.setCharacterSize(15);
-    // Note: The color is now set in drawNumbers function using the current theme
     text.setPosition(abscissa, ordinate);
 }
 
@@ -676,12 +671,15 @@ void grafic::zoomChange(const double zoomConstant)
 
     calculateDeltaDivision();
 }
-void grafic::showCalculationWindow() {
+void grafic::showCalculationWindow()
+{
     sf::RenderWindow calcWindow(sf::VideoMode(400, 300), "Fereastra Tabelare/Integrale");
 
-    while (calcWindow.isOpen()) {
+    while (calcWindow.isOpen())
+    {
         sf::Event event;
-        while (calcWindow.pollEvent(event)) {
+        while (calcWindow.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
                 calcWindow.close();
         }
