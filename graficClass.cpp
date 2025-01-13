@@ -30,7 +30,7 @@ void grafic::initializeThemes() // initializam temele
         sf::Color(255, 50, 50)  // maximumPointColor
     };
 
-    isDarkTheme = false; // Start with light theme
+    isDarkTheme = false; // incepem cu tema default, cea alba
 }
 
 void grafic::setupThemeButton(sf::Font &font)
@@ -53,7 +53,7 @@ void grafic::toggleTheme()
     isDarkTheme = !isDarkTheme;
     Theme &currentTheme = getCurrentTheme();
 
-    // Update theme button colors
+    //dam update la butoanele pentru theme
     themeButton.setFillColor(currentTheme.buttonFillColor);
     themeButton.setOutlineColor(currentTheme.inputBoxOutlineColor);
     themeButtonText.setFillColor(currentTheme.textColor);

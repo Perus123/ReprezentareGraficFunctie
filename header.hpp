@@ -60,7 +60,7 @@ public:
    double screenWidth, screenHeight;
    double upperBound, lowerBound;
    sf::Font font;
-   grafic(double screenWidthParameter, double screenHeightParameter);
+   grafic(double screenWidthParameter, double screenHeightParameter);//constructorul clasei, initializeaza obiectul grafic cu dimensiunile graficului
    void calculateDeltaDivision();
    void initialiseGraphic(vector<function> &functions);
    void drawNumbers(sf::RenderWindow &window);

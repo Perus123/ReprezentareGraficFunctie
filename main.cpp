@@ -3,7 +3,6 @@
 using namespace std;
 int main()
 {
-
     function a;
     vector<function> f;
     a.input = "x*(sin(1/x))";
