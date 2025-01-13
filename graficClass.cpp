@@ -97,11 +97,11 @@ grafic::grafic(double screenWidthParameter, double screenHeightParameter) // con
 {
     center.x = screenWidthParameter / 2;
     center.y = screenHeightParameter / 2;
-    leftEnd = -10;
-    rightEnd = 10; /// coordonate stanga si dreapta
+    leftEnd = 0-(screenWidth/60/2);
+    rightEnd = 0+(screenWidth/60/2); /// coordonate stanga si dreapta
     screenWidth = screenWidthParameter;
     screenHeight = screenHeightParameter;
-    division = screenWidth / 20;
+    division = 60;
     if (!font.loadFromFile("TIMES.TTF"))
     {
         std::cerr << "Error loading font!" << std::endl;
@@ -155,9 +155,20 @@ void grafic::initialiseGraphic(vector<function> &functions)
     enterButtonText.setFillColor(sf::Color::Black);
     enterButtonText.setPosition(425, 20);
 
-    //setup window tabelare+integrale
+    //setup window integrale
+    sf::RectangleShape integralWindowButton(sf::Vector2f(100,40));
+    integralWindowButton.setPosition(screenWidth - 110, 50);
+    integralWindowButton.setFillColor(getCurrentTheme().buttonFillColor);
+    integralWindowButton.setOutlineThickness(2);
+    integralWindowButton.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
 
-
+    sf::Text textIntegralWindow;
+    textIntegralWindow.setFont(font);
+    textIntegralWindow.setString("Integrale");
+    textIntegralWindow.setCharacterSize(15);
+    textIntegralWindow.setFillColor(getCurrentTheme().textColor);
+    textIntegralWindow.setPosition(screenWidth - 105, 60);
+    
     // Error message setup
     sf::Text errorText;
     errorText.setFont(font);
@@ -207,6 +218,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         inputText.setFillColor(getCurrentTheme().textColor);
                         enterButton.setFillColor(getCurrentTheme().buttonFillColor);
                         enterButtonText.setFillColor(getCurrentTheme().textColor);
+                        integralWindowButton.setFillColor(getCurrentTheme().buttonFillColor);
                         errorText.setFillColor(sf::Color::Red); // Keep error text red in both themes
 
                         // Update existing function boxes
@@ -219,8 +231,12 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             box.textButon.setFillColor(getCurrentTheme().textColor);
                         }
                     }
-                    for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
+                    if(integralWindowButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                     {
+                            showCalculationWindow();
+                    }
+                    for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
+                    {   
                         TextofBox auxButton = *i;
                         if (auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                         {
@@ -382,6 +398,8 @@ void grafic::initialiseGraphic(vector<function> &functions)
         window.draw(errorText);
         window.draw(themeButton);
         window.draw(themeButtonText);
+        window.draw(integralWindowButton);
+        window.draw(textIntegralWindow);
 
         cout << leftEnd << " " << rightEnd << '\n';      // afisam in consola capetele stanga si dreapta
         for (int i = 0; i < borderFunctions.size(); i++) // aici desenam propriu zis toate elementele de tip, butoane , setand mai intai de unde le punem
