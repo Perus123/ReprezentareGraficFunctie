@@ -123,11 +123,10 @@ bool function::calculatePoints(double start, double end, double delta)
 
     double res = executeFunction(value, *this, validFunction);
     while (value <= end && validFunction)
-    {
-        sum+=res*delta;
-        
-        values.emplace_back(point({value, res}));
+    {   
         res = executeFunction(value, *this, validFunction);
+        sum+=res*delta;
+        values.emplace_back(point({value, res}));
         value += delta;
     }
     sum+=res*delta;
