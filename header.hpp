@@ -37,7 +37,14 @@ public:
    /// cos(x)^2+x^3/5*2+sin(4*x/5)
    /// 2*3 + (8-3)/2
 };
-
+class TextofBox
+{
+public:
+    sf::RectangleShape box, deleteButton; // box reprezinta fundalul
+    sf::Text textBox, textButon;          // textBox este textul functiei afisate iar textButton textul butonului
+   TextofBox(sf::Font&f);
+    
+};
 
 struct Theme {
     sf::Color backgroundColor;
@@ -72,7 +79,7 @@ public:
    void screenMovement(const unordered_map<sf::Keyboard::Key, bool> keyStates, bool& pointsRecalculation);
    void settingLines(sf::VertexArray& lines);
    void zoomChange(const double constant);
-   void showCalculationWindow(const vector<function>& f);
+   void showCalculationWindow(const vector<function>& functions, vector<TextofBox> textBoxes);
 
 private:
     bool isDarkTheme;

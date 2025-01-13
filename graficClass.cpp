@@ -60,34 +60,28 @@ void grafic::toggleTheme()
 }
 
 double zoomLevel = 1;
-class TextofBox
-{
-public:
-    sf::RectangleShape box, deleteButton; // box reprezinta fundalul
-    sf::Text textBox, textButon;          // textBox este textul functiei afisate iar textButton textul butonului
 
-    TextofBox(sf::Font &f)
-    {
-        // setam fontul default pentru program
-        box.setSize(sf::Vector2f(400, 40));
-        box.setFillColor(sf::Color::White);
-        box.setOutlineThickness(2);
-        box.setOutlineColor(sf::Color::Black);
-        // setam carcateristicile la butonul de delete
-        deleteButton.setSize(sf::Vector2f(100, 40));
-        deleteButton.setFillColor(sf::Color::Green);
-        deleteButton.setOutlineThickness(2);
-        deleteButton.setOutlineColor(sf::Color::Black);
-        textBox.setFont(f);
-        textBox.setString("");
-        textBox.setCharacterSize(15);
-        textBox.setFillColor(sf::Color::Black);
-        textButon.setFont(f);
-        textButon.setString("Sterge");
-        textButon.setCharacterSize(15);
-        textButon.setFillColor(sf::Color::Black);
-    }
-};
+TextofBox::TextofBox(sf::Font &f)
+{
+    // setam fontul default pentru program
+    box.setSize(sf::Vector2f(400, 40));
+    box.setFillColor(sf::Color::White);
+    box.setOutlineThickness(2);
+    box.setOutlineColor(sf::Color::Black);
+    // setam carcateristicile la butonul de delete
+    deleteButton.setSize(sf::Vector2f(100, 40));
+    deleteButton.setFillColor(sf::Color::Green);
+    deleteButton.setOutlineThickness(2);
+    deleteButton.setOutlineColor(sf::Color::Black);
+    textBox.setFont(f);
+    textBox.setString("");
+    textBox.setCharacterSize(15);
+    textBox.setFillColor(sf::Color::Black);
+    textButon.setFont(f);
+    textButon.setString("Sterge");
+    textButon.setCharacterSize(15);
+    textButon.setFillColor(sf::Color::Black);
+}
 void grafic::calculateDeltaDivision()
 {
     delta = (rightEnd - leftEnd) / pointsNumber;
@@ -97,8 +91,8 @@ grafic::grafic(double screenWidthParameter, double screenHeightParameter) // con
 {
     center.x = screenWidthParameter / 2; // coordonate pentru centru
     center.y = screenHeightParameter / 2;
-    leftEnd = 0-(screenWidth/60/2);
-    rightEnd = 0+(screenWidth/60/2); /// coordonate stanga si dreapta
+    leftEnd = 0 - (screenWidthParameter / 60 / 2);
+    rightEnd = 0 + (screenWidthParameter / 60 / 2); /// coordonate stanga si dreapta
     screenWidth = screenWidthParameter;
     screenHeight = screenHeightParameter;
     division = 60;
@@ -232,7 +226,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         errorText.setFillColor(sf::Color::Red); // Keep error text red in both themes
 
                         // trebuie sa dam update butoanele pentru functii
-                        for (auto &box : borderFunctions)// luam toate elementele de tip chenare, folosim referinta ca sa mearga mai repede , fara copiere
+                        for (auto &box : borderFunctions) // luam toate elementele de tip chenare, folosim referinta ca sa mearga mai repede , fara copiere
                         {
                             box.box.setFillColor(getCurrentTheme().inputBoxFillColor);
                             box.box.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
@@ -241,12 +235,12 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             box.textButon.setFillColor(getCurrentTheme().textColor);
                         }
                     }
-                    if(integralWindowButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+                    if (integralWindowButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                     {
-                            showCalculationWindow(functions);
+                        showCalculationWindow(functions, borderFunctions);
                     }
                     for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
-                    {   
+                    {
                         TextofBox auxButton = *i;
                         if (auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
                         {
@@ -266,8 +260,8 @@ void grafic::initialiseGraphic(vector<function> &functions)
                     {                              // trebuie adaugat daca chestia aia nu e functie ig
                         if (!currentInput.empty()) // daca avem o functie scrisa inauntru
                         {
-                            function newFunc;//creeam un obiect function
-                            TextofBox newChenar(font);//si un chenar nou
+                            function newFunc;          // creeam un obiect function
+                            TextofBox newChenar(font); // si un chenar nou
                             newFunc.input = currentInput;
                             newChenar.box.setFillColor(getCurrentTheme().inputBoxFillColor);
                             newChenar.box.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
@@ -276,8 +270,8 @@ void grafic::initialiseGraphic(vector<function> &functions)
                             newChenar.deleteButton.setOutlineColor(getCurrentTheme().inputBoxOutlineColor);
                             newChenar.textButon.setFillColor(getCurrentTheme().textColor);
                             /// curatareInput(newFunc.input);
-                            newFunc.postfixOrderCalculation();//calculam ordinea post fixa
-                            if (newFunc.calculatePoints(leftEnd, rightEnd, delta))//calculam pe un interval
+                            newFunc.postfixOrderCalculation();                     // calculam ordinea post fixa
+                            if (newFunc.calculatePoints(leftEnd, rightEnd, delta)) // calculam pe un interval
                             {
                                 functions.push_back(newFunc);
                                 newChenar.textBox.setString(newFunc.input);
@@ -334,9 +328,9 @@ void grafic::initialiseGraphic(vector<function> &functions)
                         }
                     }
                 }
-                else if (event.text.unicode < 128)//permite doar caractere ascii
-                { // Regular character
-                    currentInput += static_cast<char>(event.text.unicode);//Convertește codul Unicode al caracterului introdus într-un char
+                else if (event.text.unicode < 128)                         // permite doar caractere ascii
+                {                                                          // Regular character
+                    currentInput += static_cast<char>(event.text.unicode); // Convertește codul Unicode al caracterului introdus într-un char
                 }
                 inputText.setString(currentInput);
             }
@@ -397,7 +391,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
         // Desenare
         window.clear(getCurrentTheme().backgroundColor);
 
-        //dam update la culoarea axelor
+        // dam update la culoarea axelor
         lines[0].color = getCurrentTheme().axisColor;
         lines[1].color = getCurrentTheme().axisColor;
         lines[2].color = getCurrentTheme().axisColor;
@@ -415,7 +409,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
         }
 
         // Draw functions with theme colors
-        int index=0;
+        int index = 0;
         for (auto &func : functions)
         {
             drawFunctionLines(window, func, mouseCoordinates, index);
@@ -466,7 +460,7 @@ void grafic::drawNumbers(sf::RenderWindow &window)
     {
         sf::Text text;
         setText(text, fontTimesNewRoman, index, abscissa, ordinate);
-        text.setFillColor(getCurrentTheme().textColor); //folosim culoarea de la tema pentru text
+        text.setFillColor(getCurrentTheme().textColor); // folosim culoarea de la tema pentru text
         window.draw(text);
 
         // desenam liniile pentru axe
@@ -712,9 +706,12 @@ void grafic::zoomChange(const double zoomConstant)
 
     calculateDeltaDivision();
 }
-void grafic::showCalculationWindow(const vector<function>& funtions) {
-    sf::RenderWindow calcWindow(sf::VideoMode(400, 300), "Fereastra Tabelare/Integrale");
-
+void grafic::showCalculationWindow(const vector<function> &functions, vector<TextofBox> textBoxes)
+{
+    sf::RenderWindow calcWindow(sf::VideoMode(600, 450), "Fereastra Integrale");
+    sf::Font font;
+    font.loadFromFile("TIMES.TTF");
+    sf::Vector2f coordonatesandFunctionDisplay = {10.0, 85.0};
     while (calcWindow.isOpen())
     {
         sf::Event event;
@@ -723,16 +720,27 @@ void grafic::showCalculationWindow(const vector<function>& funtions) {
             if (event.type == sf::Event::Closed)
                 calcWindow.close();
         }
-
+        sf::Text tx;
+        tx.setString("Calculating from "+to_string(leftEnd)+" to "+to_string(rightEnd));
+        tx.setFont(font);
+        tx.setFillColor(sf::Color::Black);
+        tx.setCharacterSize(15);
+        tx.setPosition(10,40);
         calcWindow.clear(sf::Color::White);
-
-        // Poți adăuga aici desenarea tabelului, textelor, etc.
-        sf::Font font;
-        font.loadFromFile("TIMES.TTF");
-        sf::Text text("Calculare integrale...", font, 20);
-        text.setFillColor(sf::Color::Black);
-        text.setPosition(50, 50);
-        calcWindow.draw(text);
+        for (int i = 0; i < textBoxes.size(); i++) // aici desenam propriu zis toate elementele de tip, butoane , setand mai intai de unde le punem
+        {
+            textBoxes[i].box.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x, coordonatesandFunctionDisplay.y + i * 40));
+            textBoxes[i].textBox.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 5, coordonatesandFunctionDisplay.y + i * 40 + 5)); //+5 pentru ca este in interiorul casetei
+            textBoxes[i].deleteButton.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 410, coordonatesandFunctionDisplay.y + i * 40));
+            setText(textBoxes[i].textButon, font, functions[i].sum, 0, 0);
+            textBoxes[i].textButon.setPosition(sf::Vector2f(coordonatesandFunctionDisplay.x + 415, coordonatesandFunctionDisplay.y + i * 40 + 5)); // +5 pentru ca este in interiorul casetei
+            
+            calcWindow.draw(textBoxes[i].deleteButton);
+            calcWindow.draw(textBoxes[i].box);
+            calcWindow.draw(textBoxes[i].textBox);
+            calcWindow.draw(textBoxes[i].textButon);
+        }
+        calcWindow.draw(tx);
 
         calcWindow.display();
     }

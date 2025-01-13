@@ -14,7 +14,6 @@ double executeFunction(double variable, const function &a, bool &validFunction)
 
     for (int i = 0; i < a.postfixRow.size(); i++)
     {
-        
 
         // incepem prin a separa variabilele si le punem pe stiva
         string element = a.postfixRow[i];
@@ -23,7 +22,7 @@ double executeFunction(double variable, const function &a, bool &validFunction)
             stiva.push(variable);
         else if (isdigit(element[0]))
             stiva.push(stof(element));
-        
+
         else if (element.size() >= 2) // daca avem o functie, o inlocuim cu valoarea ei
         {
 
@@ -73,34 +72,32 @@ double executeFunction(double variable, const function &a, bool &validFunction)
             else
             {
                 validFunction = false;
-                
+
                 return 0;
             }
         }
         else // avem 2 variabile despartite printr-un operator
-        {   
+        {
             double var1;
-            bool check=false;
+            bool check = false;
             if (stiva.empty() == 0)
             {
                 var1 = stiva.top();
-                check=true;
+                check = true;
                 stiva.pop();
-            } 
+            }
 
             double var2 = 0;
             if (stiva.empty() == 0)
             {
                 var2 = stiva.top();
                 stiva.pop();
-                
             }
-            if(check==false)
+            if (check == false)
             {
-                validFunction=false;
+                validFunction = false;
                 return 0;
             }
-            
 
             if (element == "+")
                 stiva.push(var2 + var1);
@@ -120,19 +117,21 @@ double executeFunction(double variable, const function &a, bool &validFunction)
 bool function::calculatePoints(double start, double end, double delta)
 {
     values.clear();
+    sum = 0;
     double value = start;
     bool validFunction = true;
-    
+
     double res = executeFunction(value, *this, validFunction);
-    
     while (value <= end && validFunction)
     {
-       
+        sum+=res*delta;
+        
         values.emplace_back(point({value, res}));
         res = executeFunction(value, *this, validFunction);
         value += delta;
     }
-   
+    sum+=res*delta;
+
     return validFunction;
 }
 
