@@ -343,12 +343,12 @@ void grafic::initialiseGraphic(vector<function> &functions)
                     keyStates[event.key.code] = true;
                 }
                 // procesare zoom
-                if (event.key.code == sf::Keyboard::Add)
+                if (event.key.code == sf::Keyboard::Add&&!isInputActive)
                 {
                     zoomChange(0.5);
                     needsRecalculation = true;
                 }
-                if (event.key.code == sf::Keyboard::Subtract)
+                if (event.key.code == sf::Keyboard::Subtract&&!isInputActive)
                 {
                     zoomChange(2.0);
                     needsRecalculation = true;
