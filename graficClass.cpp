@@ -239,7 +239,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
                     {
                         showCalculationWindow(functions, borderFunctions);
                     }
-                    for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();) // nu-s sigur ca am inteles aici complet
+                    for (vector<TextofBox>::iterator i = borderFunctions.begin(); i != borderFunctions.end();)
                     {
                         TextofBox auxButton = *i;
                         if (auxButton.deleteButton.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
