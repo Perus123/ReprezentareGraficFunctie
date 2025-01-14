@@ -169,7 +169,7 @@ void grafic::initialiseGraphic(vector<function> &functions)
 
     sf::Text textIntegralWindow;
     textIntegralWindow.setFont(font);
-    textIntegralWindow.setString("Integrale");
+    textIntegralWindow.setString("Integrals");
     textIntegralWindow.setCharacterSize(15);
     textIntegralWindow.setFillColor(getCurrentTheme().textColor);
     textIntegralWindow.setPosition(screenWidth - 105, 60);
@@ -536,6 +536,8 @@ void setText(sf::Text &text, sf::Font &font, double value, double abscissa, doub
     text.setFont(font);
     std::string result = to_string(value);
     result.erase(result.find_last_not_of('0') + 1);
+    if(result[0]!='-')
+        result=" "+result;
     if (!result.empty() && result.back() == '.')
     {
         result.pop_back();

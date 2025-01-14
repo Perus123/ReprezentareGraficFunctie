@@ -63,7 +63,7 @@ class grafic
 public:
    point center;
    double rightEnd, leftEnd;
-   const int pointsNumber = 5000;
+   const int pointsNumber = 3000;
    double delta, division;
    std::vector<sf::Color> colors1;
    std::vector<sf::Color> colors2;
